@@ -22,7 +22,6 @@ ohmyzsh/ohmyzsh path:lib/misc.zsh kind:defer
 ohmyzsh/ohmyzsh path:lib/correction.zsh kind:defer
 
 # -- Oh My Zsh Plugins --
-ohmyzsh/ohmyzsh path:plugins/command-not-found kind:defer
 ohmyzsh/ohmyzsh path:plugins/git kind:defer
 ohmyzsh/ohmyzsh path:plugins/history kind:defer
 ohmyzsh/ohmyzsh path:plugins/bun kind:defer
