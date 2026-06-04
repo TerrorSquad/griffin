@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.9.0](https://github.com/TerrorSquad/ansible-post-installation/compare/v2.8.0...v2.9.0) (2026-06-04)
+
+
+### Features
+
+* add update-vscode function ([bfdb724](https://github.com/TerrorSquad/ansible-post-installation/commit/bfdb7241a11ba988ab04e65b9242ac24eaa95a06))
+
+
+### Bug Fixes
+
+* remove zsh command-not-found plugin ([f433b36](https://github.com/TerrorSquad/ansible-post-installation/commit/f433b36e6b6a920f4cb5f5cf5a1c2a5f1c64f284))
+* update clipboard copy functionality and enhance b85 archive handling ([e0e08d3](https://github.com/TerrorSquad/ansible-post-installation/commit/e0e08d3da3b0ef6e559e64b577ebdbeea0fd3d78))
+
 ## [2.8.0](https://github.com/TerrorSquad/ansible-post-installation/compare/v2.7.0...v2.8.0) (2026-02-23)
 
 
