@@ -1,12 +1,13 @@
 ---
-- name: Check if Docker Desktop is already installed
+# ponytail: OrbStack only - Docker Desktop also claims the docker socket, installing both is a coin flip
+- name: Check if OrbStack is already installed
   ansible.builtin.stat:
-    path: /Applications/Docker.app
+    path: /Applications/OrbStack.app
   register: docker_app_exists
 
-- name: Install Docker Desktop via Homebrew Cask
+- name: Install OrbStack via Homebrew Cask
   community.general.homebrew_cask:
-    name: docker
+    name: orbstack
     state: present
     path: "{{ homebrew_path }}"
   when: not docker_app_exists.stat.exists
@@ -18,7 +19,7 @@
 - name: Log Docker installation status
   ansible.builtin.debug:
     msg: >
-      Docker Desktop {{ 'already installed' if docker_app_exists.stat.exists else
+      OrbStack {{ 'already installed' if docker_app_exists.stat.exists else
          ('installed successfully' if docker_install_result.changed else
           'installation skipped or failed') }}
 

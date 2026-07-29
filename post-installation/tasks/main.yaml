@@ -22,6 +22,7 @@
     ddev: "{{ true if 'ddev' in ansible_run_tags else ddev }}"
     vpn: "{{ true if 'vpn' in ansible_run_tags else vpn }}"
     fonts: "{{ true if 'fonts' in ansible_run_tags else fonts }}"
+    mobile: "{{ true if 'mobile' in ansible_run_tags else mobile }}"
   when: ansible_run_tags | difference(['all', 'always']) | length > 0
   tags: [always]
 

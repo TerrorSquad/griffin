@@ -11,7 +11,8 @@
       become_user: "{{ username }}"
       environment:
         HOMEBREW_NO_AUTO_UPDATE: "1"
-      loop: "{{ tool_sets.gui_dev_macos }}"
+      loop: "{{ tool_sets.gui_dev_macos + (tool_sets.gui_dev_macos_optional if all | bool else [])
+         + (tool_sets.gui_mobile_macos if (mobile | bool) or (all | bool) else []) }}"
       register: dev_cask_results
       failed_when: false
 

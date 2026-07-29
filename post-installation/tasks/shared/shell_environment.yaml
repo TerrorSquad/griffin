@@ -6,9 +6,30 @@
     apply:
       tags: [zsh]
 
+- name: Tap terrorsquad/tap (forge-git)
+  community.general.homebrew_tap:
+    name: terrorsquad/tap
+    state: present
+  register: brew_tap_result
+  until: brew_tap_result is success
+  retries: 3
+  delay: 2
+  become: "{{ ansible_facts['os_family'] == 'Debian' }}"
+  become_user: "{{ username }}"
+
+- name: Build the Homebrew CLI package list
+  ansible.builtin.set_fact:
+    homebrew_cli_packages: >-
+      {{ tool_sets.modern_cli_homebrew
+         + (tool_sets.modern_cli_homebrew_optional if all | bool else [])
+         + (tool_sets.cli_macos if is_darwin else [])
+         + (tool_sets.cli_mobile_macos if is_darwin and ((mobile | bool) or (all | bool)) else []) }}
+  vars:
+    is_darwin: "{{ ansible_facts['os_family'] == 'Darwin' }}"
+
 - name: Install modern CLI tools via Homebrew
   community.general.homebrew:
-    name: "{{ tool_sets.modern_cli_homebrew }}"
+    name: "{{ homebrew_cli_packages }}"
     state: present
     path: "{{ homebrew_path }}"
   register: brew_modern_result
