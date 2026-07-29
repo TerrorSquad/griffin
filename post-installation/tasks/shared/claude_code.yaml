@@ -1,0 +1,54 @@
+---
+# Claude Code user configuration (~/.claude)
+- name: Create Claude Code config directories
+  ansible.builtin.file:
+    path: "{{ claude_config_path }}/{{ item }}"
+    state: directory
+    owner: "{{ username }}"
+    mode: "0755"
+  become: true
+  become_user: "{{ username }}"
+  loop: ["", hooks]
+
+- name: Read existing Claude Code settings
+  ansible.builtin.slurp:
+    src: "{{ claude_config_path }}/settings.json"
+  become: true
+  become_user: "{{ username }}"
+  register: claude_existing
+  failed_when: false
+
+# Merge, never replace: the playbook owns the keys in the template, and anything
+# else already on the machine (permissions grants above all) is left alone.
+- name: Deploy Claude Code settings.json
+  ansible.builtin.copy:
+    content: "{{ merged | dict2items | rejectattr('key', 'in', claude_purged_settings_keys) | items2dict | to_nice_json(indent=2) }}\n"
+    dest: "{{ claude_config_path }}/settings.json"
+    owner: "{{ username }}"
+    mode: "0644"
+    backup: true
+  become: true
+  become_user: "{{ username }}"
+  vars:
+    existing: "{{ (claude_existing.content | b64decode | from_json) if claude_existing.content is defined else {} }}"
+    managed: "{{ lookup('template', role_path + '/files/claude/settings.json.j2') | from_json }}"
+    merged: "{{ existing | combine(managed, recursive=true) }}"
+
+- name: Deploy Claude Code statusline script
+  ansible.builtin.copy:
+    src: ./files/claude/statusline.sh
+    dest: "{{ claude_config_path }}/statusline.sh"
+    owner: "{{ username }}"
+    mode: "0755"
+  become: true
+  become_user: "{{ username }}"
+
+# ponytail: copy, not sync - never delete hooks the user added on this machine
+- name: Deploy Claude Code hooks
+  ansible.builtin.copy:
+    src: ./files/claude/hooks/
+    dest: "{{ claude_config_path }}/hooks/"
+    owner: "{{ username }}"
+    mode: preserve
+  become: true
+  become_user: "{{ username }}"
