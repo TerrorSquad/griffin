@@ -9,6 +9,7 @@ ddev: false
 gestures: false
 fonts: false
 vpn: false
+mobile: false
 kde: true
 all: false
 remove_snap: true
@@ -24,6 +25,11 @@ download_dir: "/tmp/ansible"
 
 # System files
 docker_compose: "/usr/local/bin/docker-compose"
+
+# Claude Code settings keys the playbook deletes outright. A key merely absent
+# from the template survives the merge, so removals have to be explicit.
+claude_purged_settings_keys:
+  - hooks
 
 # Canonical tool sets (WP1: Baseline Refactor - single source of truth)
 tool_sets:
@@ -41,109 +47,190 @@ tool_sets:
 
   # All CLI tools via Homebrew (both Debian and macOS)
   modern_cli_homebrew:
-    - age
+    - agg
+    - ansible
+    - ansible-lint
+    - asciinema
+    - atuin
     - bandwhich
     - bat
+    - btop
+    - dos2unix
+    - duf
+    - dust
+    - eza
+    - fd
+    - fzf
+    - gemini-cli
+    - gh
+    - git-delta
+    - git-filter-repo
+    - gping
+    - gum
+    - htmlq
+    - htop
+    - httpie
+    - hyperfine
+    - jq
+    - lazydocker
+    - lazygit
+    - lnav
+    - make
+    - mise
+    - nano
+    - ncdu
+    - pandoc
+    - pipx
+    - qrencode
+    - ripgrep
+    - sd
+    - shellcheck
+    - terrorsquad/tap/forge-git
+    - tree
+    - unzip
+    - uv
+    - vim
+    - wget
+    - yamlfmt
+    - yazi
+    - yq
+    - zip
+    - zoxide
+
+  # Opt-in only: installed with `-e all=true`. Zero recorded uses in 21k
+  # shell-history commands, and no alias/keybinding/git-config path.
+  modern_cli_homebrew_optional:
+    - age
     - bottom
     - broot
-    - btop
     - cheat
     - croc
     - curlie
     - difftastic
     - doggo
-    - doggo
-    - duf
-    - dust
     - entr
-    - eza
+    - exiftool
     - fastfetch
-    - fd
+    - flyctl
     - fx
-    - fzf
-    - gh
-    - git-delta
     - git-quick-stats
     - glow
-    - gping
     - grex
     - gron
-    - gum
     - helix
-    - httpie
     - httpstat
-    - htop
-    - hyperfine
     - jless
-    - jq
-    - lazydocker
-    - lazygit
-    - lnav
     - lsd
-    - make
+    - lynx
+    - mdbook
     - mdcat
     - miller
-    - mise
+    - mkcert
     - navi
-    - ncdu
+    - nmap
     - oha
     - peco
     - procs
-    - ripgrep
-    - sd
-    - shellcheck
+    - rbenv
     - tealdeer
     - thefuck
     - tokei
-    - tree
-    - unzip
     - viddy
-    - vim
     - visidata
+    - webp
     - xh
-    - yamlfmt
-    - yazi
-    - yq
     - zellij
-    - zip
-    - zoxide
-    - fastfetch
+
+  # GNU userland replacements - macOS only (Linux ships these natively)
+  cli_macos:
+    - gawk
+    - gnu-sed
+    - gnu-tar
+    - mas
+    - proctools
+
+  # Python CLI tools with no Homebrew formula - installed via `uv tool install`
+  uv_tools:
+    - claude-swap
+
+  # Mac App Store apps - no Homebrew cask exists for these
+  # IDs from: mdls -name kMDItemAppStoreAdamID /Applications/<App>.app
+  mas_apps:
+    - {id: 937984704, name: Amphetamine}
+    - {id: 1287239339, name: ColorSlurp}
+    - {id: 446243721, name: Disk Inspector}
+
+  # Xcode is a ~10GB download - only with the mobile toolchain
+  mas_apps_mobile:
+    - {id: 497799835, name: Xcode}
 
   # GUI development tools (macOS)
   gui_dev_macos:
-    - jetbrains-toolbox
+    - alacritty
+    - claude-code
+    - db-browser-for-sqlite
     - iterm2
+    - wezterm
     - zed
-    - alfred
+
+  # CocoaPods is required for Flutter/React Native iOS builds
+  cli_mobile_macos:
+    - cocoapods
+
+  # Mobile toolchain (~15GB with Xcode) - opt in with `-e mobile=true` or `--tags mobile`
+  gui_mobile_macos:
+    - android-commandlinetools
+    - android-platform-tools
+    - android-studio
+    - flutter
+
+  # Opt-in only: installed with `-e all=true`. Not used day-to-day.
+  gui_dev_macos_optional:
+    - jetbrains-toolbox
     - tableplus
-    - orbstack
 
   # GUI applications (macOS)
   gui_apps_macos:
+    - dbeaver-community
+    - digikam
+    - firefox
+    - gitkraken
+    - google-drive
+    - obs
+    - onlyoffice
+    - postman
+    - qbittorrent
+    - sublime-text
+    - ticktick
+    - viber
     - visual-studio-code
+    - vlc
+    - whatsapp
+
+  # Opt-in only: installed with `-e all=true`. Not used day-to-day.
+  gui_apps_macos_optional:
+    - adguard-vpn
     - google-chrome
+    - microsoft-teams
     - slack
     - zoom
-    - vlc
-    - postman
-    - dbeaver-community
-    - gitkraken
-    - sublime-text
-    - microsoft-teams
-    - viber
-    - onlyoffice
-    - adguard-vpn
-    - ticktick
-    - whatsapp
 
   # Utility applications (macOS)
   utility_apps_macos:
+    - alfred
     - alt-tab
     - appcleaner
-    - betterdisplay
     - copyclip
+    - flameshot
+    - modern-csv
+    - monitorcontrol
     - mos
     - rectangle
+    - stats
+
+  # Opt-in only: installed with `-e all=true`. Not used day-to-day.
+  utility_apps_macos_optional:
+    - betterdisplay
     - shottr
 
   # Nerd Fonts (cross-platform)

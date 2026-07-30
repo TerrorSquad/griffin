@@ -1,0 +1,61 @@
+---
+# Regression checks for the two expressions in this role that fail silently:
+# the uv-tool skip filter and the Claude Code settings merge.
+# Run: ansible-playbook tests/assert_claude_and_uv.yaml
+- name: Assert uv-tool skip filter and Claude Code settings merge
+  hosts: localhost
+  gather_facts: false
+  vars:
+    uv_tools: [claude-swap]
+    # `uv tool list` prints "<name> vX.Y.Z" then indented "- <executable>" lines.
+    uv_stdout_installed: |
+      claude-swap v0.1.0
+      - claude-swap
+    uv_stdout_lookalike: |
+      not-claude-swap v9.9.9
+      - not-claude-swap
+    claude_purged_settings_keys: [hooks]
+    managed:
+      model: claude-opus-5
+      enabledPlugins: {ponytail@ponytail: true}
+
+  tasks:
+    - name: Installed tool is skipped
+      ansible.builtin.assert:
+        that: uv_tools | reject('in', uv_stdout_installed | regex_findall('^(\S+)', multiline=True)) | list == []
+        fail_msg: claude-swap is installed but was queued for install again
+
+    - name: A tool whose name merely contains the target is not skipped
+      ansible.builtin.assert:
+        that: uv_tools | reject('in', uv_stdout_lookalike | regex_findall('^(\S+)', multiline=True)) | list == uv_tools
+        fail_msg: substring match wrongly treated claude-swap as installed
+
+    - name: Missing uv (no stdout at all) queues every tool
+      ansible.builtin.assert:
+        that: uv_tools | reject('in', undefined_stdout | default('', true) | regex_findall('^(\S+)', multiline=True)) | list == uv_tools
+        fail_msg: an undefined stdout must not break the loop expression
+
+    - name: Empty and invalid existing settings both fall back to an empty dict
+      ansible.builtin.assert:
+        that:
+          - "('' | b64encode | b64decode or '{}') | from_json == {}"
+          - "('{\"a\": 1}' | b64encode | b64decode or '{}') | from_json == {'a': 1}"
+        fail_msg: the slurp-decode expression does not tolerate an empty file
+
+    - name: Merge keeps local permissions, overrides managed keys, purges hooks
+      vars:
+        existing:
+          model: claude-sonnet-5
+          permissions: {allow: [Bash(git status)]}
+          hooks: {PreToolUse: [stale]}
+          enabledPlugins: {local-only@x: true}
+        merged: "{{ existing | combine(managed, recursive=true) }}"
+        result: "{{ merged | dict2items | rejectattr('key', 'in', claude_purged_settings_keys) | items2dict }}"
+      ansible.builtin.assert:
+        that:
+          - result.permissions.allow == ['Bash(git status)']
+          - result.model == 'claude-opus-5'
+          - result.enabledPlugins['local-only@x']
+          - result.enabledPlugins['ponytail@ponytail']
+          - "'hooks' not in result"
+        fail_msg: "settings merge is wrong: {{ result }}"

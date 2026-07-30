@@ -1,0 +1,55 @@
+---
+# Claude Code user configuration (~/.claude)
+- name: Create Claude Code config directory
+  ansible.builtin.file:
+    path: "{{ claude_config_path }}"
+    state: directory
+    owner: "{{ username }}"
+    # Per-user config: no reason for group/other to read it.
+    mode: "0700"
+  become: true
+  become_user: "{{ username }}"
+
+- name: Read existing Claude Code settings
+  ansible.builtin.slurp:
+    src: "{{ claude_config_path }}/settings.json"
+  become: true
+  become_user: "{{ username }}"
+  register: claude_existing
+  failed_when: false
+
+# A missing, empty or hand-broken settings.json is exactly when the deploy should
+# repair the file, so anything unparseable falls back to an empty dict.
+- name: Parse existing Claude Code settings
+  block:
+    - name: Decode existing Claude Code settings
+      ansible.builtin.set_fact:
+        claude_existing_settings: "{{ (claude_existing.content | default('') | b64decode or '{}') | from_json }}"
+  rescue:
+    - name: Discard unparseable Claude Code settings
+      ansible.builtin.set_fact:
+        claude_existing_settings: {}
+
+# Merge, never replace: the playbook owns the keys in the template, and anything
+# else already on the machine (permissions grants above all) is left alone.
+- name: Deploy Claude Code settings.json
+  ansible.builtin.copy:
+    content: "{{ merged | dict2items | rejectattr('key', 'in', claude_purged_settings_keys) | items2dict | to_nice_json(indent=2) }}\n"
+    dest: "{{ claude_config_path }}/settings.json"
+    owner: "{{ username }}"
+    mode: "0600"
+    backup: true
+  become: true
+  become_user: "{{ username }}"
+  vars:
+    managed: "{{ lookup('template', role_path + '/files/claude/settings.json.j2') | from_json }}"
+    merged: "{{ claude_existing_settings | combine(managed, recursive=true) }}"
+
+- name: Deploy Claude Code statusline script
+  ansible.builtin.copy:
+    src: ./files/claude/statusline.sh
+    dest: "{{ claude_config_path }}/statusline.sh"
+    owner: "{{ username }}"
+    mode: "0700"
+  become: true
+  become_user: "{{ username }}"

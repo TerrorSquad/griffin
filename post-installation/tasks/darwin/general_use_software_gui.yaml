@@ -11,7 +11,7 @@
       become_user: "{{ username }}"
       environment:
         HOMEBREW_NO_AUTO_UPDATE: "1"
-      loop: "{{ tool_sets.gui_apps_macos }}"
+      loop: "{{ tool_sets.gui_apps_macos + (tool_sets.gui_apps_macos_optional if all | bool else []) }}"
       register: gui_cask_results
       failed_when: false
 
@@ -40,7 +40,7 @@
   become_user: "{{ username }}"
   environment:
     HOMEBREW_NO_AUTO_UPDATE: "1"
-  loop: "{{ tool_sets.utility_apps_macos }}"
+  loop: "{{ tool_sets.utility_apps_macos + (tool_sets.utility_apps_macos_optional if all | bool else []) }}"
   register: utility_cask_results
   failed_when: false
 
@@ -57,3 +57,23 @@
       - >-
         {% set failed = utility_cask_results.results | selectattr('failed', 'equalto', true) | map(attribute='item') | list %}
         Failed/Skipped ({{ failed | length }}): {{ failed | join(', ') }}
+
+# ponytail: mas requires an App Store session; failures are logged, not fatal
+- name: Install Mac App Store applications
+  community.general.mas:
+    id: "{{ item.id }}"
+    state: present
+  become: true
+  become_user: "{{ username }}"
+  loop: "{{ tool_sets.mas_apps + (tool_sets.mas_apps_mobile if (mobile | bool) or (all | bool) else []) }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: mas_results
+  failed_when: false
+
+- name: Mac App Store installation summary
+  ansible.builtin.debug:
+    msg: >-
+      {% set failed = mas_results.results | selectattr('failed', 'equalto', true) | map(attribute='item.name') | list %}
+      Mac App Store: {{ mas_results.results | length - failed | length }} ok,
+      {{ failed | length }} failed{{ ' (' + failed | join(', ') + ') - sign in to the App Store and re-run' if failed else '' }}

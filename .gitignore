@@ -7,3 +7,8 @@
 # End of https://www.gitignore.io/api/vagrant,ansible
 *.log
 .ansible
+.claude/settings.local.json
+.claude/.headroom_wrap_marker.json
+
+# Claude Code state - only files/claude/ is committed, via import_claude_configs.sh
+post-installation/files/claude/skills/

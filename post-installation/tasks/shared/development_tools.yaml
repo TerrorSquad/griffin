@@ -31,3 +31,33 @@
       tags: [vpn]
   when: (vpn | bool) or (all | bool)
   tags: [always]
+
+- name: Configure Claude Code
+  ansible.builtin.include_tasks:
+    file: shared/claude_code.yaml
+    apply:
+      tags: [claude]
+  tags: [always]
+
+- name: List installed uv tools
+  ansible.builtin.command: uv tool list
+  become: true
+  become_user: "{{ username }}"
+  environment:
+    PATH: "{{ homebrew_path }}:{{ local_bin }}:{{ ansible_env.PATH }}"
+  register: uv_tool_list
+  changed_when: false
+  failed_when: false
+
+- name: Install uv tools
+  ansible.builtin.command: uv tool install {{ item }}
+  become: true
+  become_user: "{{ username }}"
+  environment:
+    PATH: "{{ homebrew_path }}:{{ local_bin }}:{{ ansible_env.PATH }}"
+  # `uv tool list` prints "<name> vX.Y.Z" per tool; match the name field only, and
+  # tolerate uv itself being absent (the command module returns no stdout on ENOENT).
+  loop: "{{ tool_sets.uv_tools | reject('in', uv_tool_list.stdout | default('', true) | regex_findall('^(\\S+)', multiline=True)) | list }}"
+  register: uv_tool_install
+  changed_when: uv_tool_install.rc == 0
+  failed_when: false
