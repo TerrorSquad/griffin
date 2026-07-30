@@ -69,3 +69,6 @@ fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+
+# Local, machine-specific config. Not managed by Ansible - put your own exports here.
+[[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local

@@ -36,12 +36,16 @@
   become_user: "{{ username }}"
   become: true
 
+# Opt-in: `nvim +PlugInstall` below already installs anything missing, so the
+# only reason to wipe ~/.vim/plugged is to force a clean reinstall. Doing it
+# unconditionally destroys a working plugin set on every run.
 - name: Delete Neovim plugin directory
   ansible.builtin.file:
     path: "{{ user_home }}/.vim/plugged"
     state: absent
   become_user: "{{ username }}"
   become: true
+  when: nvim_reset | bool
 
 - name: Install/update Neovim plugins
   ansible.builtin.shell:
