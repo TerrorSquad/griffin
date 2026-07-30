@@ -5,19 +5,30 @@
     path: /Applications/OrbStack.app
   register: orbstack_app
 
-- name: Check if Docker Desktop is installed
+# Unconditional rather than gated on /Applications/Docker.app: a deleted app can
+# leave the cask receipt behind, and `state: absent` is idempotent either way.
+# Only the cask's `uninstall` stanza runs (privileged helpers, ~/.docker/bin) - images,
+# volumes and Docker.raw sit behind `zap`, which is deliberately not invoked, so
+# OrbStack can still import them.
+- name: Remove Docker Desktop (conflicts with OrbStack over the docker socket)
+  community.general.homebrew_cask:
+    name: docker-desktop
+    state: absent
+    path: "{{ homebrew_path }}"
+  register: docker_desktop_removed
+  failed_when: false
+
+- name: Check for a Docker Desktop install Homebrew does not own
   ansible.builtin.stat:
     path: /Applications/Docker.app
   register: docker_desktop_app
 
-# Refuse rather than uninstall: Docker Desktop owns volumes and images this
-# playbook has no business deleting. Remove it by hand, then re-run.
-- name: Fail when Docker Desktop is present
-  ansible.builtin.fail:
+- name: Warn about a leftover Docker Desktop app
+  ansible.builtin.debug:
     msg: >-
-      Docker Desktop is installed at /Applications/Docker.app and would fight OrbStack
-      for the docker socket. Uninstall it (`brew uninstall --cask docker`, or move the
-      app to the Trash and delete ~/.docker) and re-run with --tags docker.
+      /Applications/Docker.app is still present after the cask removal, so it was
+      installed by hand. Drag it to the Trash or it will fight OrbStack for the docker
+      socket. Image and volume data in ~/.docker is untouched either way.
   when: docker_desktop_app.stat.exists
 
 - name: Install OrbStack via Homebrew Cask
