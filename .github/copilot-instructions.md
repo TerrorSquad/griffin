@@ -49,6 +49,13 @@ ansible-playbook ./playbook.yaml -K -e all=true
 ansible-playbook ./playbook_macos.yaml -K -e all=true
 ```
 
+### Running Against an Already-Provisioned Machine:
+- `~/.zshrc` is overwritten from `defaults/.zshrc` on every run. Machine-specific
+  exports belong in `~/.zshrc.local`, which it sources. A pre-existing `.zshrc`
+  has its hand-added tail rescued into that file once, on first run.
+- `nvim_reset=true` wipes `~/.vim/plugged` for a clean plugin reinstall. Off by
+  default so a re-run does not destroy a working plugin set.
+
 ### Adding New Software:
 1. Choose task file: `*_cli.yaml` vs `*_gui.yaml` vs dedicated file for complex installs
 2. Add conditional inclusion to `main.yaml` or appropriate coordinator file

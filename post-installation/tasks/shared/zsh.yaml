@@ -53,11 +53,25 @@
     msg: "ℹ️  Shell change failed or skipped - this is normal in CI environments or if ZSH is already the default"
   when: not shell_change_result.changed
 
+# .zshrc is overwritten wholesale below, so anything the user appended by hand
+# has to be rescued into ~/.zshrc.local first. One-time: once .zshrc.local
+# exists, `creates` skips this and edits go straight into that file.
+- name: Preserve hand-added .zshrc lines into ~/.zshrc.local
+  ansible.builtin.script:
+    cmd: >-
+      {{ role_path }}/files/extract_zshrc_local.py
+      {{ zshrc }} {{ role_path }}/defaults/.zshrc
+    executable: "{{ ansible_python_interpreter | default('/usr/bin/env python3') }}"
+    creates: "{{ zshrc }}.local"
+  become_user: "{{ username }}"
+  become: true
+
 - name: Initialize .zshrc
   ansible.builtin.copy:
     src: "{{ role_path }}/defaults/.zshrc"
     dest: "{{ zshrc }}"
     mode: "0644"
+    backup: true
   become_user: "{{ username }}"
   become: true
 

@@ -10,6 +10,9 @@ gestures: false
 fonts: false
 vpn: false
 mobile: false
+# Wipe ~/.vim/plugged before installing plugins. Off: a re-run must not destroy
+# a working plugin set. Turn on for a clean reinstall.
+nvim_reset: false
 kde: true
 all: false
 remove_snap: true
