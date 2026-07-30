@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.10.0](https://github.com/TerrorSquad/ansible-post-installation/compare/v2.9.0...v2.10.0) (2026-07-30)
+
+
+### Features
+
+* Claude Code support and macOS tool set overhaul ([#39](https://github.com/TerrorSquad/ansible-post-installation/issues/39)) ([d917915](https://github.com/TerrorSquad/ansible-post-installation/commit/d917915fbd49156bda99738d1471a9cbed955e1e))
+
+
+### Bug Fixes
+
+* **ddev:** satisfy ansible-lint production profile ([#40](https://github.com/TerrorSquad/ansible-post-installation/issues/40)) ([c0eb741](https://github.com/TerrorSquad/ansible-post-installation/commit/c0eb7415c41dec01f24a8ab1afc1d6e967aa407c))
+
 ## [2.9.0](https://github.com/TerrorSquad/ansible-post-installation/compare/v2.8.0...v2.9.0) (2026-06-04)
 
 
