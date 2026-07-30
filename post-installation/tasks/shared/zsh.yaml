@@ -60,7 +60,7 @@
   ansible.builtin.script:
     cmd: >-
       {{ role_path }}/files/extract_zshrc_local.py
-      {{ zshrc }} {{ role_path }}/defaults/.zshrc {{ zshrc }}.local
+      {{ zshrc }} {{ role_path }}/defaults/.zshrc
     executable: "{{ ansible_python_interpreter | default('/usr/bin/env python3') }}"
     creates: "{{ zshrc }}.local"
   become_user: "{{ username }}"

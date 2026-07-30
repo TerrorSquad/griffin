@@ -3,7 +3,7 @@
 
 The playbook used to overwrite ~/.zshrc outright, so on an already-provisioned
 machine the file is [some older copy of defaults/.zshrc] + [whatever the user
-appended]. This recovers that tail into ~/.zshrc.local before the overwrite,
+appended]. This recovers that tail into <zshrc>.local before the overwrite,
 which defaults/.zshrc now sources.
 
 Bias is toward keeping too much: if the files diverge on line 1, the whole
@@ -11,30 +11,44 @@ current .zshrc is treated as local. Duplicated config is recoverable, a wiped
 PATH export is not.
 
 ponytail: longest common line prefix, not a real 3-way merge. Only runs once
-(guarded by `creates:` on ~/.zshrc.local) - after that the marker file exists
-and edits go in it directly.
+(guarded by `creates:` on the .local file) - after that the marker exists and
+edits go in it directly.
+
+Usage: extract_zshrc_local.py <current-zshrc> <shipped-zshrc>
+Writes <current-zshrc>.local
 """
 
 import pathlib
 import sys
 
 
+def local_tail(current, managed):
+    """Lines of `current` past the point it stops matching `managed`."""
+    common = 0
+    for mine, theirs in zip(current, managed):
+        if mine != theirs:
+            break
+        common += 1
+    return current[common:]
+
+
 def main():
-    current, managed, out = (pathlib.Path(p).expanduser() for p in sys.argv[1:4])
+    current = pathlib.Path(sys.argv[1]).expanduser()
+    managed = pathlib.Path(sys.argv[2]).expanduser()
 
     if not current.exists():
         return  # fresh machine, nothing to preserve
 
-    cur = current.read_text().splitlines(keepends=True)
-    mgd = managed.read_text().splitlines(keepends=True) if managed.exists() else []
+    # Derived, never passed in: this only ever writes alongside the file it read.
+    out = current.with_name(current.name + ".local")
 
-    i = 0
-    while i < len(cur) and i < len(mgd) and cur[i] == mgd[i]:
-        i += 1
-
-    tail = "".join(cur[i:]).strip("\n")
-    out.write_text(tail + "\n" if tail else "")
-    print(f"preserved {len(cur) - i} local line(s) into {out}")
+    tail = local_tail(
+        current.read_text().splitlines(keepends=True),
+        managed.read_text().splitlines(keepends=True) if managed.exists() else [],
+    )
+    body = "".join(tail).strip("\n")
+    out.write_text(body + "\n" if body else "")
+    print(f"preserved {len(tail)} local line(s) into {out}")
 
 
 if __name__ == "__main__":

@@ -20,7 +20,7 @@ def run(current):
         if current is not None:
             cur.write_text(current)
         out = home / ".zshrc.local"
-        subprocess.run([sys.executable, str(SCRIPT), str(cur), str(managed), str(out)], check=True)
+        subprocess.run([sys.executable, str(SCRIPT), str(cur), str(managed)], check=True)
         return out.read_text() if out.exists() else None
 
 
