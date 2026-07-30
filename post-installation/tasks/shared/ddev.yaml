@@ -55,13 +55,19 @@
             # Force mkcert to read/write keys in YOUR home dir, not /root/
             CAROOT: "/home/{{ username }}/.local/share/mkcert"
           become: true
+          register: mkcert_install
+          # Detect the work mkcert reports doing, rather than the absence of an
+          # "already installed" line - with several trust stores it prints both.
+          changed_when: >-
+            'is now installed' in (mkcert_install.stdout + mkcert_install.stderr)
+            or 'Created a new local CA' in (mkcert_install.stdout + mkcert_install.stderr)
 
         - name: Fix ownership of generated certificates
           ansible.builtin.file:
             path: "/home/{{ username }}/.local/share/mkcert"
             owner: "{{ username }}"
             group: "{{ username }}"
-            recurse: yes
+            recurse: true
           become: true
 
 # macOS installation
