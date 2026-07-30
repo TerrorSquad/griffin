@@ -55,7 +55,9 @@
   become_user: "{{ username }}"
   environment:
     PATH: "{{ homebrew_path }}:{{ local_bin }}:{{ ansible_env.PATH }}"
-  loop: "{{ tool_sets.uv_tools | reject('in', uv_tool_list.stdout) | list }}"
+  # `uv tool list` prints "<name> vX.Y.Z" per tool; match the name field only, and
+  # tolerate uv itself being absent (the command module returns no stdout on ENOENT).
+  loop: "{{ tool_sets.uv_tools | reject('in', uv_tool_list.stdout | default('', true) | regex_findall('^(\\S+)', multiline=True)) | list }}"
   register: uv_tool_install
   changed_when: uv_tool_install.rc == 0
   failed_when: false

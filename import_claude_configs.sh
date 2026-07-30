@@ -7,15 +7,20 @@ DEST_DIR="post-installation/files/claude"
 
 # Config only. Everything else in ~/.claude is state (projects/, sessions/,
 # history.jsonl, plugins/, cache/) and must never be committed.
+# skills/ and hooks/ are deliberately excluded: skills are plugin- and
+# marketplace-managed, and both reference personal project paths.
 FILES=(
-    "settings.json" # Model, hooks, statusline, enabled plugins
+    "settings.json" # Model, statusline, enabled plugins
     "statusline.sh" # Custom status line script
 )
-# skills/ is deliberately excluded: it is plugin- and marketplace-managed, and
-# the SKILL.md files reference personal project paths.
-DIRS=(
-    "hooks" # User-level hook scripts
-)
+
+# Stripping permissions/hooks is the whole point of this script, and only jq can
+# do it. Bail before touching anything rather than committing an unsanitized file.
+require_jq() {
+    command -v jq >/dev/null 2>&1 && return
+    echo "🛑 jq not found - cannot strip permissions/hooks from settings.json. Install jq and re-run."
+    exit 1
+}
 
 setup_directory() {
     if [ ! -d "$DEST_DIR" ]; then
@@ -41,17 +46,6 @@ copy_files() {
         fi
     done
 
-    for dir in "${DIRS[@]}"; do
-        if [ -d "$SOURCE_DIR/$dir" ]; then
-            rm -rf "${DEST_DIR:?}/$dir"
-            cp -R "$SOURCE_DIR/$dir" "$DEST_DIR/"
-            echo "✅ Copied: $dir/ ($(find "$DEST_DIR/$dir" -type f | wc -l | tr -d ' ') files)"
-            count=$((count + 1))
-        else
-            echo "⚠️  Skipped (not found): $dir/"
-        fi
-    done
-
     echo "----------------------------------------"
     echo "Import complete. $count entries copied."
 }
@@ -68,50 +62,25 @@ sanitize_settings() {
     sed "s|$HOME|{{ user_home }}|g" "$file" >"$file.j2"
     rm "$file"
 
-    # Drop permissions entirely - grants leak repo layout, and leaving the key
-    # out means the deploy merge never touches whatever is on the target machine.
-    if command -v jq >/dev/null 2>&1; then
-        jq 'del(.permissions, .hooks)' "$file.j2" >"$file.j2.tmp" && mv "$file.j2.tmp" "$file.j2"
-    else
-        echo "    ⚠️  jq not found - permissions.allow left in place, review manually"
-    fi
-}
-
-# GNU and BSD sed disagree on -i. Pick the right one once.
-sed_inplace() {
-    if sed --version >/dev/null 2>&1; then
-        sed -i "$@"
-    else
-        sed -i '' "$@"
-    fi
-}
-
-sanitize_dirs() {
-    for dir in "${DIRS[@]}"; do
-        [ ! -d "$DEST_DIR/$dir" ] && continue
-
-        echo "  - $dir/"
-        # Skills and hooks reference absolute project paths; strip the home
-        # prefix so the username never lands in git.
-        find "$DEST_DIR/$dir" -type f -exec grep -Il "$HOME" {} + 2>/dev/null |
-            while read -r f; do sed_inplace "s|$HOME|\$HOME|g" "$f"; done
-    done
-    chmod +x "$DEST_DIR/hooks"/* 2>/dev/null || true
+    # Drop permissions and hooks entirely - grants leak repo layout, and leaving
+    # the keys out means the deploy merge never touches the target machine's own.
+    jq 'del(.permissions, .hooks)' "$file.j2" >"$file.j2.tmp" && mv "$file.j2.tmp" "$file.j2"
 }
 
 check_leftovers() {
     echo "----------------------------------------"
     echo "🔍 Scanning for leftover personal data..."
 
+    # Same hard stop as credentials: a username in git is a leak, not a warning.
     local hits
     hits=$(grep -rIl -e "$HOME" -e "$(whoami)" "$DEST_DIR" 2>/dev/null || true)
     if [ -n "$hits" ]; then
-        echo "⚠️  Home path or username still present in:"
+        echo "🛑 Home path or username still present in:"
         echo "${hits//$'\n'/$'\n'     }" | sed '1s/^/     /'
-        echo "     Review these before committing."
-    else
-        echo "✅ No home paths or usernames found."
+        echo "     Sanitize these before committing."
+        exit 1
     fi
+    echo "✅ No home paths or usernames found."
 
     # Anything that looks like a credential is a hard stop. Patterns require a
     # full-length key body so docs that merely describe key formats don't trip it.
@@ -129,12 +98,12 @@ sanitize_configs() {
     echo "🧹 Sanitizing configuration files..."
 
     sanitize_settings
-    sanitize_dirs
 
     echo "✨ Sanitization complete."
 }
 
 # Main execution
+require_jq
 setup_directory
 copy_files
 sanitize_configs

@@ -6,17 +6,8 @@
     apply:
       tags: [zsh]
 
-- name: Tap terrorsquad/tap (forge-git)
-  community.general.homebrew_tap:
-    name: terrorsquad/tap
-    state: present
-  register: brew_tap_result
-  until: brew_tap_result is success
-  retries: 3
-  delay: 2
-  become: "{{ ansible_facts['os_family'] == 'Debian' }}"
-  become_user: "{{ username }}"
-
+# ponytail: no explicit homebrew_tap task - `brew install terrorsquad/tap/forge-git`
+# taps on demand for fully-qualified formulae.
 - name: Build the Homebrew CLI package list
   ansible.builtin.set_fact:
     homebrew_cli_packages: >-

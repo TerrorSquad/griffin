@@ -1,14 +1,13 @@
 ---
 # Claude Code user configuration (~/.claude)
-- name: Create Claude Code config directories
+- name: Create Claude Code config directory
   ansible.builtin.file:
-    path: "{{ claude_config_path }}/{{ item }}"
+    path: "{{ claude_config_path }}"
     state: directory
     owner: "{{ username }}"
     mode: "0755"
   become: true
   become_user: "{{ username }}"
-  loop: ["", hooks]
 
 - name: Read existing Claude Code settings
   ansible.builtin.slurp:
@@ -17,6 +16,18 @@
   become_user: "{{ username }}"
   register: claude_existing
   failed_when: false
+
+# A missing, empty or hand-broken settings.json is exactly when the deploy should
+# repair the file, so anything unparseable falls back to an empty dict.
+- name: Parse existing Claude Code settings
+  block:
+    - name: Decode existing Claude Code settings
+      ansible.builtin.set_fact:
+        claude_existing_settings: "{{ (claude_existing.content | default('') | b64decode or '{}') | from_json }}"
+  rescue:
+    - name: Discard unparseable Claude Code settings
+      ansible.builtin.set_fact:
+        claude_existing_settings: {}
 
 # Merge, never replace: the playbook owns the keys in the template, and anything
 # else already on the machine (permissions grants above all) is left alone.
@@ -30,9 +41,8 @@
   become: true
   become_user: "{{ username }}"
   vars:
-    existing: "{{ (claude_existing.content | b64decode | from_json) if claude_existing.content is defined else {} }}"
     managed: "{{ lookup('template', role_path + '/files/claude/settings.json.j2') | from_json }}"
-    merged: "{{ existing | combine(managed, recursive=true) }}"
+    merged: "{{ claude_existing_settings | combine(managed, recursive=true) }}"
 
 - name: Deploy Claude Code statusline script
   ansible.builtin.copy:
@@ -40,15 +50,5 @@
     dest: "{{ claude_config_path }}/statusline.sh"
     owner: "{{ username }}"
     mode: "0755"
-  become: true
-  become_user: "{{ username }}"
-
-# ponytail: copy, not sync - never delete hooks the user added on this machine
-- name: Deploy Claude Code hooks
-  ansible.builtin.copy:
-    src: ./files/claude/hooks/
-    dest: "{{ claude_config_path }}/hooks/"
-    owner: "{{ username }}"
-    mode: preserve
   become: true
   become_user: "{{ username }}"

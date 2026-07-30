@@ -3,24 +3,39 @@
 - name: Check if OrbStack is already installed
   ansible.builtin.stat:
     path: /Applications/OrbStack.app
-  register: docker_app_exists
+  register: orbstack_app
+
+- name: Check if Docker Desktop is installed
+  ansible.builtin.stat:
+    path: /Applications/Docker.app
+  register: docker_desktop_app
+
+# Refuse rather than uninstall: Docker Desktop owns volumes and images this
+# playbook has no business deleting. Remove it by hand, then re-run.
+- name: Fail when Docker Desktop is present
+  ansible.builtin.fail:
+    msg: >-
+      Docker Desktop is installed at /Applications/Docker.app and would fight OrbStack
+      for the docker socket. Uninstall it (`brew uninstall --cask docker`, or move the
+      app to the Trash and delete ~/.docker) and re-run with --tags docker.
+  when: docker_desktop_app.stat.exists
 
 - name: Install OrbStack via Homebrew Cask
   community.general.homebrew_cask:
     name: orbstack
     state: present
     path: "{{ homebrew_path }}"
-  when: not docker_app_exists.stat.exists
-  register: docker_install_result
-  until: docker_install_result is success
+  when: not orbstack_app.stat.exists
+  register: orbstack_install_result
+  until: orbstack_install_result is success
   retries: 3
   delay: 2
 
-- name: Log Docker installation status
+- name: Log OrbStack installation status
   ansible.builtin.debug:
     msg: >
-      OrbStack {{ 'already installed' if docker_app_exists.stat.exists else
-         ('installed successfully' if docker_install_result.changed else
+      OrbStack {{ 'already installed' if orbstack_app.stat.exists else
+         ('installed successfully' if orbstack_install_result.changed else
           'installation skipped or failed') }}
 
 - name: Ensure download directory exists
