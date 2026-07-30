@@ -74,14 +74,6 @@
         - current_git_email.config_value != ""
         - current_git_email.config_value != None
 
-- name: Copy .git-templates-sample directory
-  ansible.builtin.copy:
-    src: "{{ role_path }}/defaults/.git-templates-sample"
-    dest: "~"
-    mode: "0755"
-  become_user: "{{ username }}"
-  become: true
-
 - name: Configure git user name
   when: git_user_name is defined
   community.general.git_config:
