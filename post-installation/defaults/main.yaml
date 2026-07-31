@@ -173,6 +173,7 @@ tool_sets:
 
   # GUI development tools (macOS)
   gui_dev_macos:
+    - dbeaver-community
     - alacritty
     - claude-code
     - db-browser-for-sqlite
@@ -193,25 +194,13 @@ tool_sets:
 
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
   gui_dev_macos_optional:
-    - jetbrains-toolbox
     - tableplus
 
   # GUI applications (macOS)
   gui_apps_macos:
-    - dbeaver-community
-    - digikam
     - firefox
-    - gitkraken
-    - google-drive
-    - obs
     - onlyoffice
-    - postman
-    - sublime-text
-    - ticktick
-    # replaces qbittorrent, whose macOS builds are self-signed and rejected by
-    # Gatekeeper (cask deprecated, disabled 2026-09-01)
     - transmission
-    - viber
     - visual-studio-code
     - vlc
     - whatsapp
@@ -219,6 +208,13 @@ tool_sets:
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
   gui_apps_macos_optional:
     - adguard-vpn
+    - digikam
+    - gitkraken
+    - obs
+    - sublime-text
+    - postman
+    - ticktick
+    - google-drive
     - google-chrome
     - microsoft-teams
     - slack
@@ -230,18 +226,19 @@ tool_sets:
     - alt-tab
     - appcleaner
     - copyclip
-    - flameshot
     - modern-csv
     - monitorcontrol
     - mos
     - pearcleaner
     - rectangle
+    # replaces flameshot, whose builds are unsigned and rejected by Gatekeeper
+    # (cask deprecated, disabled 2026-09-01)
+    - shottr
     - stats
 
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
   utility_apps_macos_optional:
     - betterdisplay
-    - shottr
 
   # Nerd Fonts (cross-platform)
   nerd_fonts:
