@@ -13,6 +13,10 @@ mobile: false
 # Wipe ~/.vim/plugged before installing plugins. Off: a re-run must not destroy
 # a working plugin set. Turn on for a clean reinstall.
 nvim_reset: false
+# Prune developer tool caches (brew, npm, go, docker, ...). Off, and excluded
+# from `all`: provisioning must not delete data as a side effect. Opt in with
+# `-e prune_caches=true` or `--tags prune`.
+prune_caches: false
 kde: true
 all: false
 remove_snap: true
@@ -228,6 +232,7 @@ tool_sets:
     - modern-csv
     - monitorcontrol
     - mos
+    - pearcleaner
     - rectangle
     - stats
 

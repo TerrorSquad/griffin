@@ -87,6 +87,14 @@
     - "'KDE' in (ansible_env.XDG_CURRENT_DESKTOP | default('') | upper)"
   tags: [always]
 
+- name: Prune developer tool caches
+  ansible.builtin.include_tasks:
+    file: shared/prune_caches.yaml
+    apply:
+      tags: [prune]
+  when: prune_caches | bool
+  tags: [always]
+
 - name: Cleanup and finalization
   ansible.builtin.include_tasks:
     file: shared/finalization.yaml
