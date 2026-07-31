@@ -23,6 +23,7 @@
     vpn: "{{ true if 'vpn' in ansible_run_tags else vpn }}"
     fonts: "{{ true if 'fonts' in ansible_run_tags else fonts }}"
     mobile: "{{ true if 'mobile' in ansible_run_tags else mobile }}"
+    prune_caches: "{{ true if 'prune' in ansible_run_tags else prune_caches }}"
   when: ansible_run_tags | difference(['all', 'always']) | length > 0
   tags: [always]
 
@@ -85,6 +86,14 @@
   when:
     - kde | bool
     - "'KDE' in (ansible_env.XDG_CURRENT_DESKTOP | default('') | upper)"
+  tags: [always]
+
+- name: Prune developer tool caches
+  ansible.builtin.include_tasks:
+    file: shared/prune_caches.yaml
+    apply:
+      tags: [prune]
+  when: prune_caches | bool
   tags: [always]
 
 - name: Cleanup and finalization

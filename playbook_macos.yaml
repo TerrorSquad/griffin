@@ -5,6 +5,13 @@
   gather_facts: true
   strategy: linear
 
+  # Homebrew refuses to overwrite an app it did not install ("It seems there is
+  # already an App at ..."), which silently skips every cask whose app was
+  # installed by hand. --adopt takes ownership instead; it is a no-op on the
+  # upgrade path, so re-runs stay idempotent.
+  environment:
+    HOMEBREW_CASK_OPTS: "--adopt"
+
   roles:
     - role: post-installation
       tags: post-installation

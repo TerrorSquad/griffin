@@ -1,0 +1,15 @@
+---
+# Deliberately NOT part of `all=true`: provisioning a machine and deleting
+# caches on it are different jobs, and a re-run should never quietly free disk.
+- name: Prune developer tool caches
+  ansible.builtin.script:
+    cmd: "{{ role_path }}/files/prune_caches.sh --yes"
+  become: true
+  become_user: "{{ username }}"
+  register: prune_result
+  # the script prints its own total; a run that freed nothing is not a change
+  changed_when: "'Reclaimed: 0 MB' not in prune_result.stdout"
+
+- name: Cache prune output
+  ansible.builtin.debug:
+    var: prune_result.stdout_lines
