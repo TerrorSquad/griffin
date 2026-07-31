@@ -232,10 +232,7 @@ tool_sets:
     - rectangle
 
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
-  utility_apps_macos_optional:
-    # flameshot is the day-to-day screenshot tool (see darwin/flameshot.yaml);
-    # shottr stays available for scrolling capture and OCR, which it lacks
-    - shottr
+  utility_apps_macos_optional: []
 
   # Nerd Fonts (cross-platform)
   nerd_fonts:
