@@ -13,6 +13,9 @@
     apply:
       tags: [dev-tools, gui, ghostty]
   when: (dev_tools_gui | bool) or (all | bool)
+  # the parent include applies `gui` to everything here; without its own tag the
+  # include itself is unreachable via --tags ghostty
+  tags: [dev-tools, gui, ghostty]
 
 - name: Install general GUI software
   ansible.builtin.include_tasks:

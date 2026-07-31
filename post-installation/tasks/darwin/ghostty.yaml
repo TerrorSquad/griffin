@@ -3,7 +3,8 @@
   ansible.builtin.file:
     path: "{{ user_home }}/.config/ghostty"
     state: directory
-    mode: "0755"
+    # only the owner's Ghostty reads this; no reason to expose it to others
+    mode: "0700"
   become_user: "{{ username }}"
   become: true
 
@@ -11,6 +12,6 @@
   ansible.builtin.copy:
     src: "{{ role_path }}/defaults/.config/ghostty/config"
     dest: "{{ user_home }}/.config/ghostty/config"
-    mode: "0644"
+    mode: "0600"
   become_user: "{{ username }}"
   become: true
