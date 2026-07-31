@@ -45,9 +45,11 @@ have pnpm   && run "pnpm"          ::: pnpm store prune
 have npm    && run "npm"           ::: npm cache clean --force
 have yarn   && run "yarn"          ::: yarn cache clean
 have go     && run "Go modules"    ::: go clean -modcache
-have cargo  && run "Cargo"         ::: cargo cache --autoclean
+# `cargo cache` is a separate crate, not built in — skip unless it's installed
+cargo cache --version >/dev/null 2>&1 && run "Cargo" ::: cargo cache --autoclean
 have pip3   && run "pip"           ::: pip3 cache purge
-have composer && run "Composer"    composer clear-cache --dry-run ::: composer clear-cache
+# the composer shim exists even without php, and errors out if php is missing
+have php && have composer && run "Composer" composer clear-cache --dry-run ::: composer clear-cache
 # Deliberately not `-a` (would delete every image not attached to a running
 # container) and not `--volumes` (would delete database data). Dangling layers
 # and stopped containers only. Run those flags by hand if you mean them.
