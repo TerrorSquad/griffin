@@ -33,16 +33,6 @@ download_dir: "/tmp/ansible"
 # System files
 docker_compose: "/usr/local/bin/docker-compose"
 
-# Flameshot: installed from the upstream DMG rather than Homebrew, whose cask is
-# disabled 2026-09-01 for failing Gatekeeper. Upstream tags releases as x.y.z but
-# names the DMG x.y, so the filename drops the patch level rather than restating
-# the version — bumping flameshot_version alone is enough.
-flameshot_version: "14.0.0"
-flameshot_bundle_version: "{{ flameshot_version }}"
-flameshot_dmg: "Flameshot-{{ flameshot_version.split('.')[:2] | join('.') }}-macos-{{ 'arm64' if ansible_architecture == 'arm64' else 'intel' }}.dmg"
-flameshot_dmg_url: "https://github.com/flameshot-org/flameshot/releases/download/v{{ flameshot_version }}/{{ flameshot_dmg }}"
-flameshot_mount: "/Volumes/Flameshot"
-
 # Claude Code settings keys the playbook deletes outright. A key merely absent
 # from the template survives the merge, so removals have to be explicit.
 claude_purged_settings_keys:
@@ -221,15 +211,15 @@ tool_sets:
     - zoom
 
   # Utility applications (macOS)
+  # alt-tab, mos and rectangle dropped: macOS 26 tiling covers rectangle, and
+  # Cmd+Tab / Cmd+` covers alt-tab. mos went with them rather than keeping a
+  # scroll shim alone. alfred dropped too — macOS 26 Spotlight covers plain
+  # launching, which was all it was used for.
   utility_apps_macos:
-    - alfred
-    - alt-tab
     - appcleaner
     # replaces copyclip, which is paid after its trial
     - maccy
-    - mos
     - pearcleaner
-    - rectangle
 
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
   utility_apps_macos_optional: []
