@@ -13,7 +13,9 @@
         HOMEBREW_NO_AUTO_UPDATE: "1"
       loop: "{{ tool_sets.gui_apps_macos + (tool_sets.gui_apps_macos_optional if all | bool else []) }}"
       register: gui_cask_results
-      failed_when: false
+      # ponytail: ignore_errors (not failed_when) so the summaries can still see
+      # failed=true; failed_when rewrites it to false and hides every failure
+      ignore_errors: true
 
   always:
     - name: GUI applications installation summary
@@ -42,7 +44,7 @@
     HOMEBREW_NO_AUTO_UPDATE: "1"
   loop: "{{ tool_sets.utility_apps_macos + (tool_sets.utility_apps_macos_optional if all | bool else []) }}"
   register: utility_cask_results
-  failed_when: false
+  ignore_errors: true
 
 - name: Utility applications installation summary
   ansible.builtin.debug:
@@ -69,7 +71,7 @@
   loop_control:
     label: "{{ item.name }}"
   register: mas_results
-  failed_when: false
+  ignore_errors: true
 
 - name: Mac App Store installation summary
   ansible.builtin.debug:
