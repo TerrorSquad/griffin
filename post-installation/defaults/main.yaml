@@ -174,11 +174,10 @@ tool_sets:
   # GUI development tools (macOS)
   gui_dev_macos:
     - dbeaver-community
-    - alacritty
     - claude-code
-    - db-browser-for-sqlite
-    - iterm2
-    - wezterm
+    # replaces alacritty + wezterm + iterm2: GPU-accelerated like alacritty,
+    # native, and has a built-in quick terminal (the iTerm dropdown)
+    - ghostty
     - zed
 
   # CocoaPods is required for Flutter/React Native iOS builds
@@ -193,8 +192,7 @@ tool_sets:
     - flutter
 
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
-  gui_dev_macos_optional:
-    - tableplus
+  gui_dev_macos_optional: []
 
   # GUI applications (macOS)
   gui_apps_macos:
@@ -207,17 +205,9 @@ tool_sets:
 
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
   gui_apps_macos_optional:
-    - adguard-vpn
     - digikam
     - gitkraken
-    - obs
     - sublime-text
-    - postman
-    - ticktick
-    - google-drive
-    - google-chrome
-    - microsoft-teams
-    - slack
     - zoom
 
   # Utility applications (macOS)
@@ -225,20 +215,14 @@ tool_sets:
     - alfred
     - alt-tab
     - appcleaner
-    - copyclip
-    - modern-csv
-    - monitorcontrol
+    # replaces copyclip, which is paid after its trial
+    - maccy
     - mos
     - pearcleaner
     - rectangle
-    # replaces flameshot, whose builds are unsigned and rejected by Gatekeeper
-    # (cask deprecated, disabled 2026-09-01)
-    - shottr
-    - stats
 
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
-  utility_apps_macos_optional:
-    - betterdisplay
+  utility_apps_macos_optional: []
 
   # Nerd Fonts (cross-platform)
   nerd_fonts:
