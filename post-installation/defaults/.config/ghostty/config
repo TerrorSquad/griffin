@@ -1,0 +1,19 @@
+# Ghostty — replaces alacritty, wezterm and iterm2.
+# Theme and font mirror .config/alacritty/alacritty.yaml.
+
+# Ghostty ships this palette, so there is no need to restate the 16 One Dark
+# hex values the alacritty config spells out.
+theme = Atom One Dark
+
+font-family = Fira Code
+font-size = 16
+
+# Quick terminal: the iTerm-style dropdown, toggled from any app.
+# Requires Accessibility permission on first use (System Settings > Privacy).
+keybind = global:super+d=toggle_quick_terminal
+quick-terminal-position = top
+quick-terminal-animation-duration = 0.1
+
+# super+d is new_split:right by default; the global binding above shadows it,
+# so move the split to super+shift+d rather than losing it.
+keybind = super+shift+d=new_split:right
