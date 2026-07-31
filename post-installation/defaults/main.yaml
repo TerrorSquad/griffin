@@ -206,9 +206,11 @@ tool_sets:
     - obs
     - onlyoffice
     - postman
-    - qbittorrent
     - sublime-text
     - ticktick
+    # replaces qbittorrent, whose macOS builds are self-signed and rejected by
+    # Gatekeeper (cask deprecated, disabled 2026-09-01)
+    - transmission
     - viber
     - visual-studio-code
     - vlc
