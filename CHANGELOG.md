@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.10.1](https://github.com/TerrorSquad/ansible-post-installation/compare/v2.10.0...v2.10.1) (2026-07-31)
+
+
+### Bug Fixes
+
+* **git:** drop task copying the deleted .git-templates-sample ([#42](https://github.com/TerrorSquad/ansible-post-installation/issues/42)) ([3710784](https://github.com/TerrorSquad/ansible-post-installation/commit/371078478c87665588d288cf4c095251e4174b2d))
+* **macos:** repair silent cask failures, replace Gatekeeper-rejected apps ([#45](https://github.com/TerrorSquad/ansible-post-installation/issues/45)) ([d4f1f9f](https://github.com/TerrorSquad/ansible-post-installation/commit/d4f1f9f4082514f9cc7b84e011ac92a7ca1a434f))
+* make a re-run non-destructive on an already-provisioned machine ([#43](https://github.com/TerrorSquad/ansible-post-installation/issues/43)) ([068a1d2](https://github.com/TerrorSquad/ansible-post-installation/commit/068a1d2cc95a79cc97ca40553a7c74418246c835))
+
 ## [2.10.0](https://github.com/TerrorSquad/ansible-post-installation/compare/v2.9.0...v2.10.0) (2026-07-30)
 
 
