@@ -31,6 +31,16 @@
         cmd: "hdiutil attach -nobrowse -readonly -mountpoint {{ flameshot_mount }} {{ download_dir }}/{{ flameshot_dmg }}"
       changed_when: true
 
+    # copy merges into an existing directory and never deletes extraneous files,
+    # so an upgrade would leave the previous version's frameworks inside the
+    # bundle. Remove first to guarantee the bundle is exactly what shipped.
+    - name: Remove any previous Flameshot bundle
+      ansible.builtin.file:
+        path: /Applications/Flameshot.app
+        state: absent
+      become_user: "{{ username }}"
+      become: true
+
     - name: Copy Flameshot into /Applications
       ansible.builtin.copy:
         src: "{{ flameshot_mount }}/Flameshot.app/"

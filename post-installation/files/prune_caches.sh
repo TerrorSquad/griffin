@@ -54,12 +54,12 @@ have php && have composer && run "Composer" composer clear-cache --dry-run ::: c
 # container) and not `--volumes` (would delete database data). Dangling layers
 # and stopped containers only. Run those flags by hand if you mean them.
 have docker && run "Docker"        docker system df ::: docker system prune -f
-have gradle && run "Gradle daemon" ::: gradle --stop
 
-# Playwright/Puppeteer keep every browser build they ever downloaded; their CLIs
-# expose no prune, so this only reports. Delete old versions by hand.
-printf '\n=== browser automation caches (manual) ===\n'
-du -sh ~/Library/Caches/ms-playwright ~/.cache/puppeteer 2>/dev/null || true
+# These have no prune command that frees disk, so the script only reports their
+# size. Gradle in particular: `gradle --stop` shuts the daemon down and reclaims
+# nothing, so it is deliberately not run here. Delete by hand if you mean it.
+printf '\n=== no prune command available (manual) ===\n'
+du -sh ~/.gradle ~/Library/Caches/ms-playwright ~/.cache/puppeteer 2>/dev/null || true
 
 if ((DRY_RUN == 0)); then
   after=$(df -k / | awk 'NR==2 {print $4}')

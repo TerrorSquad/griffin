@@ -7,7 +7,8 @@
   become: true
   become_user: "{{ username }}"
   register: prune_result
-  changed_when: true
+  # the script prints its own total; a run that freed nothing is not a change
+  changed_when: "'Reclaimed: 0 MB' not in prune_result.stdout"
 
 - name: Cache prune output
   ansible.builtin.debug:

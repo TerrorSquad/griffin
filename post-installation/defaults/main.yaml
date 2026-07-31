@@ -34,11 +34,12 @@ download_dir: "/tmp/ansible"
 docker_compose: "/usr/local/bin/docker-compose"
 
 # Flameshot: installed from the upstream DMG rather than Homebrew, whose cask is
-# disabled 2026-09-01 for failing Gatekeeper. Bump both versions together — the
-# git tag carries the patch level, the DMG filename does not.
+# disabled 2026-09-01 for failing Gatekeeper. Upstream tags releases as x.y.z but
+# names the DMG x.y, so the filename drops the patch level rather than restating
+# the version — bumping flameshot_version alone is enough.
 flameshot_version: "14.0.0"
-flameshot_bundle_version: "14.0.0"
-flameshot_dmg: "Flameshot-14.0-macos-{{ 'arm64' if ansible_architecture == 'arm64' else 'intel' }}.dmg"
+flameshot_bundle_version: "{{ flameshot_version }}"
+flameshot_dmg: "Flameshot-{{ flameshot_version.split('.')[:2] | join('.') }}-macos-{{ 'arm64' if ansible_architecture == 'arm64' else 'intel' }}.dmg"
 flameshot_dmg_url: "https://github.com/flameshot-org/flameshot/releases/download/v{{ flameshot_version }}/{{ flameshot_dmg }}"
 flameshot_mount: "/Volumes/Flameshot"
 
@@ -231,7 +232,10 @@ tool_sets:
     - rectangle
 
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
-  utility_apps_macos_optional: []
+  utility_apps_macos_optional:
+    # flameshot is the day-to-day screenshot tool (see darwin/flameshot.yaml);
+    # shottr stays available for scrolling capture and OCR, which it lacks
+    - shottr
 
   # Nerd Fonts (cross-platform)
   nerd_fonts:
