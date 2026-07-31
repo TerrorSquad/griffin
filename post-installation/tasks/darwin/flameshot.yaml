@@ -1,0 +1,65 @@
+---
+# Flameshot ships no notarized macOS build, so Homebrew deprecated the cask
+# (disabled 2026-09-01). Installing the upstream DMG keeps it working, at the
+# cost of an unsigned binary — hence the explicit checksum verification below
+# and the deliberate quarantine removal at the end.
+- name: Check installed Flameshot version
+  ansible.builtin.command:
+    cmd: >-
+      defaults read /Applications/Flameshot.app/Contents/Info.plist
+      CFBundleShortVersionString
+  register: flameshot_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install Flameshot from upstream release
+  when: flameshot_installed.stdout | trim != flameshot_bundle_version
+  block:
+    - name: Download Flameshot DMG and verify against upstream checksum
+      ansible.builtin.get_url:
+        url: "{{ flameshot_dmg_url }}"
+        dest: "{{ download_dir }}/{{ flameshot_dmg }}"
+        # get_url fetches the .sha256sum file and compares — a failed match
+        # fails the task, so an altered download never reaches /Applications
+        checksum: "sha256:{{ flameshot_dmg_url }}.sha256sum"
+        mode: "0644"
+      become_user: "{{ username }}"
+      become: true
+
+    - name: Mount Flameshot DMG
+      ansible.builtin.command:
+        cmd: "hdiutil attach -nobrowse -readonly -mountpoint {{ flameshot_mount }} {{ download_dir }}/{{ flameshot_dmg }}"
+      changed_when: true
+
+    - name: Copy Flameshot into /Applications
+      ansible.builtin.copy:
+        src: "{{ flameshot_mount }}/Flameshot.app/"
+        dest: /Applications/Flameshot.app/
+        mode: preserve
+        remote_src: true
+      become_user: "{{ username }}"
+      become: true
+
+  always:
+    - name: Unmount Flameshot DMG
+      ansible.builtin.command:
+        cmd: "hdiutil detach {{ flameshot_mount }} -force"
+      changed_when: true
+      failed_when: false
+
+# Unsigned build: without this macOS refuses to launch it at all. This is a
+# deliberate trade — the checksum above is what stands in for a signature.
+- name: Check whether Flameshot is quarantined
+  ansible.builtin.command:
+    cmd: xattr -p com.apple.quarantine /Applications/Flameshot.app
+  register: flameshot_quarantine
+  changed_when: false
+  failed_when: false
+
+- name: Remove quarantine flag from Flameshot
+  ansible.builtin.command:
+    cmd: xattr -rd com.apple.quarantine /Applications/Flameshot.app
+  when: flameshot_quarantine.rc == 0
+  changed_when: true
+  become_user: "{{ username }}"
+  become: true

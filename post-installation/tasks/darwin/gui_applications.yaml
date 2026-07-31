@@ -20,3 +20,13 @@
     apply:
       tags: [gui]
   when: (gui | bool) or (all | bool)
+
+- name: Install Flameshot
+  ansible.builtin.include_tasks:
+    file: darwin/flameshot.yaml
+    apply:
+      tags: [gui, flameshot]
+  when: (gui | bool) or (all | bool)
+  # the parent include applies `gui` to everything here; without its own tag the
+  # include itself is unreachable via --tags flameshot
+  tags: [gui, flameshot]
