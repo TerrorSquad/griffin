@@ -45,26 +45,26 @@ jobs:
       - shell: wsl-bash {0}
         run: |
           WORKSPACE_PATH=$(wslpath "${{ github.workspace }}")
-          cp -r "$WORKSPACE_PATH" /home/test/ansible-post-installation
+          cp -r "$WORKSPACE_PATH" /home/test/griffin
 
       - shell: wsl-bash {0}
-        run: cd /home/test/ansible-post-installation && echo "testpw" > .github/workflows/ansible_become_password.txt
+        run: cd /home/test/griffin && echo "testpw" > .github/workflows/ansible_become_password.txt
 
       - shell: wsl-bash {0}
-        run: chmod 600 /home/test/ansible-post-installation/.github/workflows/ansible_become_password.txt
+        run: chmod 600 /home/test/griffin/.github/workflows/ansible_become_password.txt
 
       - shell: wsl-bash {0}
-        run: ls -la /home/test/ansible-post-installation/.github/workflows
+        run: ls -la /home/test/griffin/.github/workflows
 
       - name: Install Ansible collections
         shell: wsl-bash {0}
         run: |
-          cd /home/test/ansible-post-installation/ && ansible-galaxy collection install -r requirements.yaml
+          cd /home/test/griffin/ && ansible-galaxy collection install -r requirements.yaml
 
       - name: Run ansible playbook
         shell: wsl-bash {0}
         run: |
-          cd /home/test/ansible-post-installation/
+          cd /home/test/griffin/
           ansible-playbook ./playbook.yaml \
             --become-password-file .github/workflows/ansible_become_password.txt \
             -e all=true \

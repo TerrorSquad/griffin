@@ -5,12 +5,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   app: {
-    baseURL: '/ansible-post-installation/',
+    baseURL: '/griffin/',
     buildAssetsDir: 'assets',
   },
 
   site: {
-    url: 'https://terrorsquad.github.io/ansible-post-installation',
+    url: 'https://terrorsquad.github.io/griffin',
     name: 'Griffin',
   },
 

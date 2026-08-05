@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Fetch the Zscaler root certificate
-URL="https://raw.githubusercontent.com/TerrorSquad/ansible-post-installation/master/post-installation/defaults/ZscalerRootCA.crt"
+URL="https://raw.githubusercontent.com/TerrorSquad/griffin/master/post-installation/defaults/ZscalerRootCA.crt"
 LOCATION_TO_STORE="/usr/local/share/ca-certificates/ZscalerRootCA.crt"
 
 # Download with error checking and output suppression

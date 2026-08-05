@@ -108,4 +108,4 @@
     msg:
       - "🎉 Griffin installation complete!"
       - "Please restart your machine to ensure all changes take effect."
-      - "Check the documentation at: https://terrorsquad.github.io/ansible-post-installation/"
+      - "Check the documentation at: https://terrorsquad.github.io/griffin/"
