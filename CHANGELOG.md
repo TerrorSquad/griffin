@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.2](https://github.com/TerrorSquad/griffin/compare/v2.10.1...v2.10.2) (2026-08-05)
+
+
+### Bug Fixes
+
+* point every URL at the renamed griffin repo ([#47](https://github.com/TerrorSquad/griffin/issues/47)) ([9cb6172](https://github.com/TerrorSquad/griffin/commit/9cb617230c02bdf0ce7370d9ea85765d0d9d9f33))
+
 ## [2.10.1](https://github.com/TerrorSquad/ansible-post-installation/compare/v2.10.0...v2.10.1) (2026-07-31)
 
 
