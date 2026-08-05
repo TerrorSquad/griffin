@@ -16,10 +16,10 @@ export default defineAppConfig({
 
   github: {
     owner: "terrorsquad",
-    name: "ansible-post-installation",
+    name: "griffin",
     branch: "master",
     rootDir: "docs",
-    url: "https://github.com/terrorsquad/ansible-post-installation",
+    url: "https://github.com/terrorsquad/griffin",
   },
 
   socials: {

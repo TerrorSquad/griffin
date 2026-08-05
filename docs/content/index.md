@@ -15,7 +15,7 @@ main:
     ::UButton{to="/getting_started/introduction" icon="i-heroicons-rocket-launch" size="xl"}
       Get Started
     ::
-    ::UButton{to="https://github.com/TerrorSquad/ansible-post-installation/" target="_blank" color="gray" variant="ghost" icon="i-simple-icons-github" size="xl"}
+    ::UButton{to="https://github.com/TerrorSquad/griffin/" target="_blank" color="gray" variant="ghost" icon="i-simple-icons-github" size="xl"}
       Star on GitHub
     ::
   ::

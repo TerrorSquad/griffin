@@ -6,7 +6,7 @@ We welcome contributions from the community to make Griffin even better! Whether
 
 There are several ways you can contribute to Griffin:
 
-*   **Report Bugs:** If you encounter any bugs or unexpected behavior, please open an issue on the [GitHub repository](https://github.com/TerrorSquad/ansible-post-installation). Provide detailed information about the issue, including steps to reproduce it.
+*   **Report Bugs:** If you encounter any bugs or unexpected behavior, please open an issue on the [GitHub repository](https://github.com/TerrorSquad/griffin). Provide detailed information about the issue, including steps to reproduce it.
 *   **Suggest Enhancements:** Have an idea for a new feature or improvement? Feel free to open an issue to discuss it.
 *   **Improve Documentation:** Help us make the documentation clearer and more comprehensive. You can suggest edits, fix typos, or add new sections.
 *   **Submit Code:** If you're comfortable with Ansible and want to contribute code, you can fork the repository, make your changes, and submit a pull request.
@@ -39,7 +39,7 @@ Please note that this project adheres to a [Code of Conduct](code-of-conduct). B
 
 ## Getting Help
 
-If you have any questions or need assistance, feel free to create an issue in the [GitHub repository](https://github.com/TerrorSquad/ansible-post-installation).
+If you have any questions or need assistance, feel free to create an issue in the [GitHub repository](https://github.com/TerrorSquad/griffin).
 
 ## Thank You!
 

@@ -1,8 +1,8 @@
 # Griffin: Effortless Cross-Platform Configuration
 
-[![Ubuntu](https://github.com/TerrorSquad/ansible-post-installation/actions/workflows/ubuntu.yaml/badge.svg)](https://github.com/TerrorSquad/ansible-post-installation/actions/workflows/ubuntu.yaml)
-[![WSL](https://github.com/TerrorSquad/ansible-post-installation/actions/workflows/wsl.yaml/badge.svg)](https://github.com/TerrorSquad/ansible-post-installation/actions/workflows/wsl.yaml)
-[![macOS](https://github.com/TerrorSquad/ansible-post-installation/actions/workflows/macos.yaml/badge.svg)](https://github.com/TerrorSquad/ansible-post-installation/actions/workflows/macos.yaml)
+[![Ubuntu](https://github.com/TerrorSquad/griffin/actions/workflows/ubuntu.yaml/badge.svg)](https://github.com/TerrorSquad/griffin/actions/workflows/ubuntu.yaml)
+[![WSL](https://github.com/TerrorSquad/griffin/actions/workflows/wsl.yaml/badge.svg)](https://github.com/TerrorSquad/griffin/actions/workflows/wsl.yaml)
+[![macOS](https://github.com/TerrorSquad/griffin/actions/workflows/macos.yaml/badge.svg)](https://github.com/TerrorSquad/griffin/actions/workflows/macos.yaml)
 
 ## Overview
 
@@ -32,7 +32,7 @@ Griffin is an Ansible playbook designed to automate the installation and configu
 
 For detailed installation instructions, usage guides, and FAQs, please refer to our comprehensive documentation:
 
-[**https://terrorsquad.github.io/ansible-post-installation/**](https://terrorsquad.github.io/ansible-post-installation/)
+[**https://terrorsquad.github.io/griffin/**](https://terrorsquad.github.io/griffin/)
 
 ## License
 
