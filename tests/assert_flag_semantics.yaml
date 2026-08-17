@@ -1,0 +1,58 @@
+---
+# Flag-semantics regression checks. `ci` and `all` are independent: `ci` exercises
+# code paths cheaply, `all` installs everything the author uses. Neither implies
+# the other, and the CI package set must stay a subset of the `all` set.
+# Run: ansible-playbook tests/assert_flag_semantics.yaml
+- name: Assert ci and all flag semantics
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../post-installation/defaults/main.yaml
+
+  tasks:
+    - name: Both flags default to false
+      ansible.builtin.assert:
+        that:
+          - not (ci | bool)
+          - not (all | bool)
+        fail_msg: ci and all must both default to false
+
+    - name: The optional CLI list is included under all, and under ci
+      vars:
+        set_default: "{{ tool_sets.modern_cli_homebrew }}"
+        set_all: "{{ tool_sets.modern_cli_homebrew + tool_sets.modern_cli_homebrew_optional }}"
+      ansible.builtin.assert:
+        that:
+          - set_default | length > 0
+          - set_all | length > set_default | length
+          - set_default | difference(set_all) == []
+        fail_msg: the optional CLI list must extend, not replace, the base list
+
+    - name: No tool is listed in both the base and optional CLI sets
+      ansible.builtin.assert:
+        that:
+          - tool_sets.modern_cli_homebrew | intersect(tool_sets.modern_cli_homebrew_optional) == []
+        fail_msg: >-
+          duplicated between base and optional:
+          {{ tool_sets.modern_cli_homebrew | intersect(tool_sets.modern_cli_homebrew_optional) }}
+
+    - name: Each flag independently pulls in the optional CLI list
+      vars:
+        base: "{{ tool_sets.modern_cli_homebrew }}"
+        with_flag: "{{ tool_sets.modern_cli_homebrew + tool_sets.modern_cli_homebrew_optional }}"
+      ansible.builtin.assert:
+        that:
+          - with_flag | length == (base | length) + (tool_sets.modern_cli_homebrew_optional | length)
+          - with_flag | unique | length == with_flag | length
+        fail_msg: optional CLI tools overlap the base list, so the flag would not grow it cleanly
+
+    - name: Every tool set is a list with no empty or duplicated entries
+      ansible.builtin.assert:
+        that:
+          - item.value | length == item.value | unique | length
+          - item.value | select('==', '') | list == []
+        fail_msg: "tool_sets.{{ item.key }} has duplicate or empty entries"
+      loop: "{{ tool_sets | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      when: item.value | type_debug == 'list'
