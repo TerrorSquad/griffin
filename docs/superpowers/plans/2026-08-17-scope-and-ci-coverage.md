@@ -528,9 +528,18 @@ Add this job to the `jobs:` mapping in `.github/workflows/reviewdog.yaml`, at th
           ansible-playbook tests/assert_flag_semantics.yaml
           ansible-playbook tests/assert_claude_and_uv.yaml
 
-      - name: Run Python unit tests
-        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+      # These use module-level asserts rather than unittest, so run the file
+      # directly: `unittest discover` collects zero tests and exits 0 regardless.
+      - name: Run Python checks
+        run: python3 tests/test_extract_zshrc_local.py
 ```
+
+**Corrected during execution:** an earlier draft of this step used
+`python3 -m unittest discover -s tests -p 'test_*.py'`. Measured locally, that
+reports `Ran 0 tests ... NO TESTS RAN` and still exits 0, because
+`tests/test_extract_zshrc_local.py` uses module-level `assert` statements rather
+than `unittest.TestCase`. It would have been a permanently green no-op. Run the
+file directly instead — that is also what its own docstring prescribes.
 
 - [ ] **Step 3: Verify the workflow parses and has two jobs**
 
