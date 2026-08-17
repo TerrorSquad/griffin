@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.0](https://github.com/TerrorSquad/griffin/compare/v2.10.2...v2.11.0) (2026-08-17)
+
+
+### Features
+
+* **gui:** opt-in Viber, gate heavy GUI apps behind `all`, add flag picker ([#49](https://github.com/TerrorSquad/griffin/issues/49)) ([9111d70](https://github.com/TerrorSquad/griffin/commit/9111d70dba858128ef5be2db31a5afe298f1d0f0))
+
 ## [2.10.2](https://github.com/TerrorSquad/griffin/compare/v2.10.1...v2.10.2) (2026-08-05)
 
 
