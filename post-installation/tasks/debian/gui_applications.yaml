@@ -11,5 +11,5 @@
   ansible.builtin.include_tasks:
     file: debian/general_use_software_gui.yaml
     apply:
-      tags: [gui]
-  when: (gui | bool) or (all | bool)
+      tags: [gui, viber]
+  when: (gui | bool) or (all | bool) or (viber | bool)

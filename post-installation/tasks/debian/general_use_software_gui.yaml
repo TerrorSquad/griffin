@@ -1,10 +1,13 @@
 ---
-- name: Download and install RescueTime
+- name: Install optional GUI applications
   ansible.builtin.include_tasks: shared/utils/install_remote_deb.yaml
   vars:
-    remote_software_name: RescueTime
-    remote_package_name: rescuetime
-    remote_software_url: https://www.rescuetime.com/installers/rescuetime_current_amd64.deb
+    remote_software_name: "{{ item.name }}"
+    remote_package_name: "{{ item.package }}"
+    remote_software_url: "{{ item.url }}"
+  loop: "{{ tool_sets.gui_apps_debian_optional if all | bool else [] }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Fix Google Chrome duplicate repository entry
   ansible.builtin.include_tasks: shared/utils/clean_apt_conflicts.yaml
@@ -31,21 +34,16 @@
         state: present
         update_cache: true
 
-- name: Download and install Zoom
-  ansible.builtin.include_tasks: shared/utils/install_remote_deb.yaml
-  vars:
-    remote_software_name: Zoom
-    remote_package_name: zoom
-    remote_software_url: https://zoom.us/client/latest/zoom_amd64.deb
-
 - name: Download and install Viber
   ansible.builtin.include_tasks: shared/utils/install_remote_deb.yaml
   vars:
     remote_software_name: Viber
     remote_package_name: viber
     remote_software_url: https://download.cdn.viber.com/cdn/desktop/Linux/viber.deb
+  when: viber | bool
 
 - name: Download and install Tixati
+  when: all | bool
   block:
     - name: Download Tixati page
       ansible.builtin.get_url:
@@ -69,13 +67,6 @@
         remote_package_name: tixati
         remote_software_url: "{{ tixati_url_result.stdout }}"
 
-- name: Download and install UnifiedRemote
-  ansible.builtin.include_tasks: shared/utils/install_remote_deb.yaml
-  vars:
-    remote_software_name: UnifiedRemote
-    remote_package_name: unifiedremote
-    remote_software_url: https://www.unifiedremote.com/download/linux-x64-deb
-
 - name: Install apt apps - Variety, Flameshot, Bleachbit
   ansible.builtin.apt:
     name:
@@ -86,13 +77,6 @@
       - vlc
       - redshift
       - redshift-gtk
-
-- name: Download and install mailspring
-  ansible.builtin.include_tasks: shared/utils/install_github_asset.yaml
-  vars:
-    github_repo: Foundry376/mailspring
-    github_asset: mailspring
-    type: deb
 
 - name: Install ONLYOFFICE Desktop Editors
   block:
@@ -115,6 +99,7 @@
         update_cache: true
 
 - name: Install ModernCSV
+  when: all | bool
   block:
     - name: Download ModernCSV
       ansible.builtin.shell:
