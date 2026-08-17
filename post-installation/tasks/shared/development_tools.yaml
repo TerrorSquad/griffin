@@ -5,7 +5,7 @@
     file: "{{ ansible_facts['os_family'] | lower }}/docker.yaml"
     apply:
       tags: [docker]
-  when: (docker | default(false) | bool) or (all | bool)
+  when: (docker | default(false) | bool) or (all | bool) or (ci | bool)
   tags: [always]
 
 - name: Install DDEV local development environment
@@ -13,7 +13,7 @@
     file: shared/ddev.yaml
     apply:
       tags: [ddev]
-  when: (ddev | default(false) | bool) or (all | bool)
+  when: (ddev | default(false) | bool) or (all | bool) or (ci | bool)
   tags: [always]
 
 - name: Install fonts

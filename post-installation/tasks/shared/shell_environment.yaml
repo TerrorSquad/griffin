@@ -12,7 +12,7 @@
   ansible.builtin.set_fact:
     homebrew_cli_packages: >-
       {{ tool_sets.modern_cli_homebrew
-         + (tool_sets.modern_cli_homebrew_optional if all | bool else [])
+         + (tool_sets.modern_cli_homebrew_optional if (all | bool) or (ci | bool) else [])
          + (tool_sets.cli_macos if is_darwin else [])
          + (tool_sets.cli_mobile_macos if is_darwin and ((mobile | bool) or (all | bool)) else []) }}
   vars:

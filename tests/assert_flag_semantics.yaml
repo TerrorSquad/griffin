@@ -10,12 +10,26 @@
     - ../post-installation/defaults/main.yaml
 
   tasks:
-    - name: Both flags default to false
+    # Read the defaults file as data rather than testing the runtime values, so
+    # this still holds when the playbook is invoked with -e ci=true / -e all=true.
+    - name: Read the role defaults as data
+      ansible.builtin.set_fact:
+        role_defaults: "{{ lookup('ansible.builtin.file', playbook_dir ~ '/../post-installation/defaults/main.yaml') | from_yaml }}"
+
+    - name: Both flags are declared and default to false
       ansible.builtin.assert:
         that:
-          - not (ci | bool)
-          - not (all | bool)
-        fail_msg: ci and all must both default to false
+          - "'ci' in role_defaults"
+          - "'all' in role_defaults"
+          - not (role_defaults.ci | bool)
+          - not (role_defaults.all | bool)
+        fail_msg: ci and all must both be declared in defaults/main.yaml and default to false
+
+    - name: Neither flag implies the other
+      ansible.builtin.assert:
+        that:
+          - role_defaults.ci != true or role_defaults.all != true
+        fail_msg: ci and all are independent; neither may be defaulted on
 
     - name: The optional CLI list is included under all, and under ci
       vars:
