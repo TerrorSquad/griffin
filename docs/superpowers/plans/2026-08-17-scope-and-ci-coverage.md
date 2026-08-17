@@ -20,6 +20,13 @@ Measured on 2026-08-17 at commit `7cfb1bf`:
 - `tests/assert_claude_and_uv.yaml` exists but **is not referenced by any workflow** — manual-only.
 - 855 of 926 commits are by one author; repo ships author-specific config (`.p10k.zsh`, KDE layout, MX Master 3 remap, Zscaler certs, `terrorsquad/tap/forge-git`).
 
+> **Superseded in part.** After this plan was executed, the Claude Code
+> settings deployment and the `uv tool install` machinery were removed from the
+> role at the author's request, along with `tests/assert_claude_and_uv.yaml`,
+> `post-installation/files/claude/`, the `uv_tools` list, and the `uv` formula.
+> References to that test below are historical. `tests/assert_flag_semantics.yaml`
+> is unaffected and remains the assertion suite CI runs.
+
 ## Global Constraints
 
 - **ansible-lint `production` profile must pass.** Config at `.ansible-lint`; `docs/` and `.github/` are excluded from linting.

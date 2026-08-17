@@ -20,7 +20,6 @@ themes: "{{ user_home }}/.themes/"
 # User files
 antidote_file_path: "{{ user_home }}/.antidote.sh"
 zshrc: "{{ user_home }}/.zshrc"
-claude_config_path: "{{ user_home }}/.claude"
 terminator_config_file: "{{ terminator_config_dir }}/config"
 
 # NVIM

@@ -34,9 +34,7 @@ jobs:
         run: pipx install ansible-core || pip install ansible-core
 
       - name: Run assertion playbooks
-        run: |
-          ansible-playbook tests/assert_flag_semantics.yaml
-          ansible-playbook tests/assert_claude_and_uv.yaml
+        run: ansible-playbook tests/assert_flag_semantics.yaml
 
       # These use module-level asserts rather than unittest, so run the file
       # directly: `unittest discover` collects zero tests and exits 0 regardless.
