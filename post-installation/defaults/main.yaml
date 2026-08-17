@@ -10,6 +10,9 @@ gestures: false
 fonts: false
 vpn: false
 mobile: false
+# Off, and excluded from `all`: not everyone wants a messenger installed.
+# Opt in with `-e viber=true` or `--tags viber`.
+viber: false
 # Wipe ~/.vim/plugged before installing plugins. Off: a re-run must not destroy
 # a working plugin set. Turn on for a clean reinstall.
 nvim_reset: false
@@ -223,6 +226,20 @@ tool_sets:
 
   # Opt-in only: installed with `-e all=true`. Not used day-to-day.
   utility_apps_macos_optional: []
+
+  # Opt-in only: installed with `-e all=true`. Not used day-to-day, and each
+  # one is heavy, account-bound, or personal taste.
+  # Mirrors the macOS *_optional lists.
+  gui_apps_debian_optional:
+    - name: RescueTime
+      package: rescuetime
+      url: https://www.rescuetime.com/installers/rescuetime_current_amd64.deb
+    - name: Zoom
+      package: zoom
+      url: https://zoom.us/client/latest/zoom_amd64.deb
+    - name: UnifiedRemote
+      package: unifiedremote
+      url: https://www.unifiedremote.com/download/linux-x64-deb
 
   # Nerd Fonts (cross-platform)
   nerd_fonts:
