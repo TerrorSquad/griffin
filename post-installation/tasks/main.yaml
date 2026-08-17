@@ -25,6 +25,7 @@
     mobile: "{{ true if 'mobile' in ansible_run_tags else mobile }}"
     viber: "{{ true if 'viber' in ansible_run_tags else viber }}"
     prune_caches: "{{ true if 'prune' in ansible_run_tags else prune_caches }}"
+    ci: "{{ true if 'ci' in ansible_run_tags else ci }}"
   when: ansible_run_tags | difference(['all', 'always']) | length > 0
   tags: [always]
 
@@ -61,7 +62,7 @@
     file: shared/programming_languages.yaml
     apply:
       tags: [languages, programming, rust, golang]
-  when: (rust | bool) or (golang | bool) or (all | bool)
+  when: (rust | bool) or (golang | bool) or (all | bool) or (ci | bool)
   tags: [always]
 
 - name: Development tools and containerization
