@@ -6,13 +6,24 @@
 
 ## Overview
 
-Griffin is an Ansible playbook designed to automate the installation and configuration of software on both Linux and macOS systems, making cross-platform post-installation tasks a breeze.
+Griffin is one developer's Linux and macOS workstation, expressed as an Ansible playbook. It turns a fresh install into a working environment in a single command.
+
+It is published because it is useful to read and fork, not because it is a general-purpose provisioner. The tool choices, dotfiles, and desktop tweaks are opinionated and personal — expect to remove things you don't want.
 
 ## Key Features
 
-* **Automates Post-Installation Tasks:** Configure system settings, install packages, and perform other common tasks.
-* **Ensures Consistency:** Maintain uniform configuration across multiple systems.
-* **Highly Customizable:** Easily modify playbooks to meet your specific needs.
+* **One command, whole machine:** Shell, CLI tooling, languages, containers, and desktop config in a single run.
+* **Idempotent:** Safe to re-run. Re-running is the intended way to update an existing machine.
+* **Modular:** Feature flags and tags let you install only the parts you want.
+* **Cross-platform:** The same role covers Ubuntu, Mint, Debian, WSL, and macOS.
+
+## Forking
+
+The fastest path to your own setup:
+
+1. Edit `tool_sets` in `post-installation/defaults/main.yaml` — that's the single source of truth for what gets installed.
+2. Replace the dotfiles in `post-installation/defaults/` with your own.
+3. Run `ansible-playbook ./playbook.yaml -K` and iterate.
 
 ## Supported Platforms
 
