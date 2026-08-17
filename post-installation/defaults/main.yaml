@@ -46,7 +46,6 @@ tool_sets:
     - curl
     - git
     - gpg
-    - python3-pip
     - procps
     - file
     - unzip
@@ -55,8 +54,6 @@ tool_sets:
   # All CLI tools via Homebrew (both Debian and macOS)
   modern_cli_homebrew:
     - agg
-    - ansible
-    - ansible-lint
     - asciinema
     - atuin
     - bandwhich
@@ -68,15 +65,12 @@ tool_sets:
     - eza
     - fd
     - fzf
-    - gemini-cli
     - gh
     - git-delta
-    - git-filter-repo
     - gping
     - gum
     - htmlq
     - htop
-    - httpie
     - hyperfine
     - jq
     - lazydocker
@@ -87,7 +81,6 @@ tool_sets:
     - nano
     - ncdu
     - pandoc
-    - pipx
     - qrencode
     - ripgrep
     - sd
@@ -125,7 +118,6 @@ tool_sets:
     - grex
     - gron
     - helix
-    - httpstat
     - jless
     - lsd
     - lynx
@@ -134,16 +126,13 @@ tool_sets:
     - miller
     - mkcert
     - navi
-    - nmap
     - oha
     - peco
     - procs
     - rbenv
     - tealdeer
-    - thefuck
     - tokei
     - viddy
-    - visidata
     - webp
     - xh
     - zellij
