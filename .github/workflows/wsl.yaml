@@ -67,5 +67,5 @@ jobs:
           cd /home/test/griffin/
           ansible-playbook ./playbook.yaml \
             --become-password-file .github/workflows/ansible_become_password.txt \
-            -e all=true \
+            -e ci=true \
             -e github_token="${{ secrets.GITHUB_TOKEN }}"

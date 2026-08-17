@@ -17,6 +17,17 @@ concurrency:
 jobs:
   ansible:
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # The config most users actually get: CLI + shell, no flags.
+          - name: default
+            flags: ""
+          # Every code path worth exercising, minus GUI apps and SDKs.
+          - name: ci
+            flags: "-e ci=true"
+    name: ansible (${{ matrix.name }})
     steps:
       - uses: actions/checkout@v4
 
@@ -27,4 +38,6 @@ jobs:
       - name: Run ansible playbook
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: cd ${{ github.workspace }} && ansible-playbook ./playbook.yaml -e all=true -e github_token=$GITHUB_TOKEN
+        run: |
+          cd ${{ github.workspace }}
+          ansible-playbook ./playbook.yaml ${{ matrix.flags }} -e github_token=$GITHUB_TOKEN
