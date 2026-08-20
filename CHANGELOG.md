@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.0](https://github.com/TerrorSquad/griffin/compare/v2.11.0...v2.12.0) (2026-08-20)
+
+
+### Features
+
+* separate ci flag from all, cover the default install path, unbreak CI ([#52](https://github.com/TerrorSquad/griffin/issues/52)) ([61f93f9](https://github.com/TerrorSquad/griffin/commit/61f93f9db4b2deb1f9312e2546980d9166e36c3d))
+
 ## [2.11.0](https://github.com/TerrorSquad/griffin/compare/v2.10.2...v2.11.0) (2026-08-17)
 
 
