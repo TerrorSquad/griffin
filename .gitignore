@@ -12,3 +12,7 @@
 
 # Claude Code state - only files/claude/ is committed, via import_claude_configs.sh
 post-installation/files/claude/skills/
+
+# Python bytecode from running tests/
+__pycache__/
+*.pyc

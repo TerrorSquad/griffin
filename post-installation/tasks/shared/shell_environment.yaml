@@ -6,13 +6,23 @@
     apply:
       tags: [zsh]
 
-# ponytail: no explicit homebrew_tap task - `brew install terrorsquad/tap/forge-git`
-# taps on demand for fully-qualified formulae.
+# A fully-qualified formula does not tap on demand when it is one name among many
+# in a batch install: the module resolves the whole list up front and fails with
+# "No available formula ... This command requires the tap terrorsquad/tap".
+# It only appeared to work on machines that had already tapped it by hand.
+- name: Tap the terrorsquad Homebrew repository
+  community.general.homebrew_tap:
+    name: terrorsquad/tap
+    state: present
+    path: "{{ homebrew_path }}"
+  become: "{{ ansible_facts['os_family'] == 'Debian' }}"
+  become_user: "{{ username }}"
+
 - name: Build the Homebrew CLI package list
   ansible.builtin.set_fact:
     homebrew_cli_packages: >-
       {{ tool_sets.modern_cli_homebrew
-         + (tool_sets.modern_cli_homebrew_optional if all | bool else [])
+         + (tool_sets.modern_cli_homebrew_optional if (all | bool) or (ci | bool) else [])
          + (tool_sets.cli_macos if is_darwin else [])
          + (tool_sets.cli_mobile_macos if is_darwin and ((mobile | bool) or (all | bool)) else []) }}
   vars:

@@ -23,3 +23,20 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
+
+  assertions:
+    name: runner / assertions
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Ansible
+        run: pipx install ansible-core || pip install ansible-core
+
+      - name: Run assertion playbooks
+        run: ansible-playbook tests/assert_flag_semantics.yaml
+
+      # These use module-level asserts rather than unittest, so run the file
+      # directly: `unittest discover` collects zero tests and exits 0 regardless.
+      - name: Run Python checks
+        run: python3 tests/test_extract_zshrc_local.py

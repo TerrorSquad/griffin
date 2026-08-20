@@ -7,6 +7,7 @@ on:
     paths:
       - "post-installation/**/*"
       - ".github/workflows/wsl.yaml"
+      - "requirements.yaml"
   schedule:
     - cron: "0 0 * * 1" # Every Monday at 00:00
 
@@ -67,5 +68,5 @@ jobs:
           cd /home/test/griffin/
           ansible-playbook ./playbook.yaml \
             --become-password-file .github/workflows/ansible_become_password.txt \
-            -e all=true \
+            -e ci=true \
             -e github_token="${{ secrets.GITHUB_TOKEN }}"

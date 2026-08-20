@@ -112,6 +112,20 @@ vars:
 - Certificate placement in `/usr/local/share/ca-certificates/`
 - Always include proxy considerations for network operations
 
+## Tool Inclusion Criterion
+
+This repo is one developer's workstation. The test for keeping a tool is **"do I
+actually use it?"**, not "might someone want it". Apply it on every change:
+
+- A tool with no shell-history usage, no alias, no keybinding, and no git-config
+  path belongs in a `*_optional` list — or nowhere.
+- Prefer removing over adding. A dependency that pulls in a language runtime
+  (Python, Node) must earn that weight; check `brew deps <formula>` before adding.
+- If apt or mise already provides a tool, do not also install it via Homebrew.
+
+`all=true` means "everything the author uses". `ci=true` means "every code path
+worth exercising, cheaply". They are independent — never make one imply the other.
+
 ## Commit Conventions
 
 This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification:

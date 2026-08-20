@@ -22,6 +22,10 @@ nvim_reset: false
 prune_caches: false
 kde: true
 all: false
+# Exercise every code path cheaply for CI: installs the optional CLI tools and
+# the language/container toolchains, but no GUI apps, IDEs, or SDKs. Independent
+# of `all` — neither implies the other. Not intended for human use.
+ci: false
 remove_snap: true
 
 # System directories (OS-agnostic)
@@ -35,11 +39,6 @@ download_dir: "/tmp/ansible"
 
 # System files
 docker_compose: "/usr/local/bin/docker-compose"
-
-# Claude Code settings keys the playbook deletes outright. A key merely absent
-# from the template survives the merge, so removals have to be explicit.
-claude_purged_settings_keys:
-  - hooks
 
 # Canonical tool sets (WP1: Baseline Refactor - single source of truth)
 tool_sets:
@@ -91,7 +90,6 @@ tool_sets:
     - terrorsquad/tap/forge-git
     - tree
     - unzip
-    - uv
     - vim
     - wget
     - yamlfmt
@@ -147,10 +145,6 @@ tool_sets:
     - gnu-tar
     - mas
     - proctools
-
-  # Python CLI tools with no Homebrew formula - installed via `uv tool install`
-  uv_tools:
-    - claude-swap
 
   # Mac App Store apps - no Homebrew cask exists for these
   # IDs from: mdls -name kMDItemAppStoreAdamID /Applications/<App>.app
