@@ -20,7 +20,6 @@
     rust: "{{ true if 'rust' in ansible_run_tags else rust }}"
     golang: "{{ true if 'golang' in ansible_run_tags else golang }}"
     ddev: "{{ true if 'ddev' in ansible_run_tags else ddev }}"
-    vpn: "{{ true if 'vpn' in ansible_run_tags else vpn }}"
     fonts: "{{ true if 'fonts' in ansible_run_tags else fonts }}"
     mobile: "{{ true if 'mobile' in ansible_run_tags else mobile }}"
     viber: "{{ true if 'viber' in ansible_run_tags else viber }}"
@@ -69,7 +68,7 @@
   ansible.builtin.include_tasks:
     file: shared/development_tools.yaml
     apply:
-      tags: [dev-tools, docker, ddev, fonts, vpn]
+      tags: [dev-tools, docker, ddev, fonts]
   tags: [always]
 
 - name: GUI applications and tools

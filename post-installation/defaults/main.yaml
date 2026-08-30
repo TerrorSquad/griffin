@@ -8,7 +8,6 @@ docker: false
 ddev: false
 gestures: false
 fonts: false
-vpn: false
 mobile: false
 # Off, and excluded from `all`: not everyone wants a messenger installed.
 # Opt in with `-e viber=true` or `--tags viber`.
@@ -56,11 +55,13 @@ tool_sets:
   # All CLI tools via Homebrew (both Debian and macOS)
   modern_cli_homebrew:
     - agg
+    - antidote
     - asciinema
-    - atuin
     - bandwhich
     - bat
     - btop
+    - cmake
+    - docker-compose
     - dos2unix
     - duf
     - dust
@@ -80,14 +81,15 @@ tool_sets:
     - lnav
     - make
     - mise
-    - nano
     - ncdu
     - pandoc
     - qrencode
     - ripgrep
     - sd
     - shellcheck
+    - starship
     - terrorsquad/tap/forge-git
+    - terrorsquad/tap/porter-sender
     - tree
     - unzip
     - vim
@@ -106,7 +108,6 @@ tool_sets:
     - broot
     - cheat
     - croc
-    - curlie
     - difftastic
     - doggo
     - entr
@@ -116,19 +117,14 @@ tool_sets:
     - fx
     - git-quick-stats
     - glow
-    - grex
     - gron
     - helix
     - jless
     - lsd
     - lynx
-    - mdbook
-    - mdcat
     - miller
     - mkcert
-    - navi
     - oha
-    - peco
     - procs
     - rbenv
     - tealdeer
@@ -136,7 +132,6 @@ tool_sets:
     - viddy
     - webp
     - xh
-    - zellij
 
   # GNU userland replacements - macOS only (Linux ships these natively)
   cli_macos:
@@ -193,7 +188,6 @@ tool_sets:
   gui_apps_macos_optional:
     - digikam
     - gitkraken
-    - sublime-text
     - zoom
 
   # Utility applications (macOS)
