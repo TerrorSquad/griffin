@@ -6,7 +6,6 @@ golang: false
 rust: false
 docker: false
 ddev: false
-gestures: false
 fonts: false
 mobile: false
 # Off, and excluded from `all`: not everyone wants a messenger installed.

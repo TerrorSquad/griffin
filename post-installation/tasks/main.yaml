@@ -37,7 +37,7 @@
 
 - name: Install and configure Homebrew
   ansible.builtin.include_tasks:
-    file: "{{ ansible_facts['os_family'] | lower }}/homebrew.yaml"
+    file: shared/homebrew.yaml
     apply:
       tags: [homebrew, packages]
   tags: [always]

@@ -10,7 +10,7 @@
 
 - name: Install Go
   ansible.builtin.include_tasks:
-    file: "{{ ansible_facts['os_family'] | lower }}/golang.yaml"
+    file: shared/golang.yaml
     apply:
       tags: [golang]
   when: (golang | bool) or (all | bool) or (ci | bool)

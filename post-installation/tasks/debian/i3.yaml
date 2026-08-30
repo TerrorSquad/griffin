@@ -1,9 +1,0 @@
----
-- name: Install i3 and supporting tools
-  ansible.builtin.apt:
-    name:
-      - i3
-      - i3status
-      - suckless-tools
-      - brightnessctl
-# TODO: Add custom config

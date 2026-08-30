@@ -23,7 +23,6 @@ You can enable specific features by passing variables or using tags (see below).
 | `golang` | `false` | Installs Go toolchain |
 | `fonts` | `false` | Installs Nerd Fonts |
 | `vpn` | `false` | Installs VPN clients |
-| `gestures` | `false` | Installs libinput-gestures (Linux only) |
 | `all` | `false` | Enables ALL features |
 
 ## Tags

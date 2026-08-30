@@ -2,6 +2,10 @@
 - name: Update font cache
   ansible.builtin.command: fc-cache -f -v
   changed_when: false
+  # fc-cache is fontconfig, i.e. Linux only. macOS picks up ~/Library/Fonts
+  # with no cache step, so the handler is a no-op there.
+  when: ansible_facts['os_family'] != 'Darwin'
+
 
 - name: Reload Plasma Shell
   ansible.builtin.shell: |
