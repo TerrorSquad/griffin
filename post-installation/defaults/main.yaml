@@ -38,6 +38,10 @@ download_dir: "/tmp/ansible"
 # System files
 docker_compose: "/usr/local/bin/docker-compose"
 
+# Go toolchain version, managed by mise. Pinned to major.minor so a re-run
+# does not install a new toolchain every time upstream releases one.
+golang_version: "1.27"
+
 # Canonical tool sets (WP1: Baseline Refactor - single source of truth)
 tool_sets:
   # Minimal system prerequisites (apt only - required for Homebrew bootstrap)
@@ -61,7 +65,6 @@ tool_sets:
     - broot
     - btop
     - cmake
-    - docker-compose
     - dos2unix
     - duf
     - dust

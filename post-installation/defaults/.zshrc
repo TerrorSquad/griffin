@@ -70,9 +70,5 @@ fi
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 
-# mise manages language runtimes (go, node, ...). Activation puts its shims on
-# PATH; without this the toolchains it installs are invisible to the shell.
-command -v mise >/dev/null && eval "$(mise activate zsh)"
-
 # Local, machine-specific config. Not managed by Ansible - put your own exports here.
 [[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local
