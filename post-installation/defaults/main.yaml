@@ -6,9 +6,7 @@ golang: false
 rust: false
 docker: false
 ddev: false
-gestures: false
 fonts: false
-vpn: false
 mobile: false
 # Off, and excluded from `all`: not everyone wants a messenger installed.
 # Opt in with `-e viber=true` or `--tags viber`.
@@ -40,6 +38,10 @@ download_dir: "/tmp/ansible"
 # System files
 docker_compose: "/usr/local/bin/docker-compose"
 
+# Go toolchain version, managed by mise. Pinned to major.minor so a re-run
+# does not install a new toolchain every time upstream releases one.
+golang_version: "1.27"
+
 # Canonical tool sets (WP1: Baseline Refactor - single source of truth)
 tool_sets:
   # Minimal system prerequisites (apt only - required for Homebrew bootstrap)
@@ -56,11 +58,13 @@ tool_sets:
   # All CLI tools via Homebrew (both Debian and macOS)
   modern_cli_homebrew:
     - agg
+    - antidote
     - asciinema
-    - atuin
     - bandwhich
     - bat
+    - broot
     - btop
+    - cmake
     - dos2unix
     - duf
     - dust
@@ -80,18 +84,21 @@ tool_sets:
     - lnav
     - make
     - mise
-    - nano
     - ncdu
     - pandoc
     - qrencode
     - ripgrep
     - sd
     - shellcheck
+    - starship
     - terrorsquad/tap/forge-git
+    - terrorsquad/tap/porter-sender
     - tree
     - unzip
+    - viddy
     - vim
     - wget
+    - xh
     - yamlfmt
     - yazi
     - yq
@@ -103,10 +110,8 @@ tool_sets:
   modern_cli_homebrew_optional:
     - age
     - bottom
-    - broot
     - cheat
     - croc
-    - curlie
     - difftastic
     - doggo
     - entr
@@ -116,27 +121,17 @@ tool_sets:
     - fx
     - git-quick-stats
     - glow
-    - grex
     - gron
     - helix
     - jless
-    - lsd
     - lynx
-    - mdbook
-    - mdcat
     - miller
     - mkcert
-    - navi
     - oha
-    - peco
     - procs
-    - rbenv
     - tealdeer
     - tokei
-    - viddy
     - webp
-    - xh
-    - zellij
 
   # GNU userland replacements - macOS only (Linux ships these natively)
   cli_macos:
@@ -193,7 +188,6 @@ tool_sets:
   gui_apps_macos_optional:
     - digikam
     - gitkraken
-    - sublime-text
     - zoom
 
   # Utility applications (macOS)

@@ -6,7 +6,6 @@ This directory contains Ansible tasks that are specific to Debian-based systems 
 
 ### Core System Files:
 - `system_setup.yaml` - System preparation (apt update, upgrade, system prerequisites)
-- `homebrew.yaml` - Homebrew installation for Linux
 
 ### GUI and Applications:
 - `gui_applications.yaml` - GUI applications coordinator
@@ -14,13 +13,8 @@ This directory contains Ansible tasks that are specific to Debian-based systems 
 - `general_use_software_gui.yaml` - General GUI applications
 
 ### System Customization:
-- `libinput_gestures.yaml` - Touchpad gesture configuration
-- `themes.yaml` - Theme configuration (Linux Mint)
-- `dconf.yaml` - Desktop configuration (Linux Mint)
 
 ### Infrastructure:
-- `homebrew.yaml` - Homebrew installation for Linux
-- `i3.yaml` - i3 window manager configuration
 - `clean_apt.yaml` - APT cache cleanup
 
 ## Platform Requirements:

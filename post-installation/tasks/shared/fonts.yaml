@@ -1,0 +1,58 @@
+---
+# One font pipeline for both platforms. The only real differences are the
+# install directory, whether the files are user- or root-owned, and that
+# Linux needs a font-cache rebuild afterwards.
+- name: Set font install directory
+  ansible.builtin.set_fact:
+    font_dir: "{{ (ansible_facts['os_family'] == 'Darwin') | ternary(user_home + '/Library/Fonts', '/usr/share/fonts/truetype') }}"
+    font_system_wide: "{{ ansible_facts['os_family'] != 'Darwin' }}"
+
+- name: Download Nerd Fonts
+  ansible.builtin.include_tasks: shared/utils/download_font.yaml
+  loop: "{{ tool_sets.nerd_fonts }}"
+
+- name: Create fonts directory
+  ansible.builtin.file:
+    path: "{{ font_dir }}"
+    state: directory
+    owner: "{{ font_system_wide | ternary(omit, username) }}"
+    mode: "0755"
+  become: "{{ font_system_wide }}"
+
+- name: Check downloaded font archives
+  ansible.builtin.stat:
+    path: "{{ download_dir }}/{{ item.filename }}"
+  loop: "{{ tool_sets.nerd_fonts }}"
+  register: downloaded_fonts
+
+- name: Extract Nerd Fonts
+  ansible.builtin.unarchive:
+    src: "{{ download_dir }}/{{ item.filename }}"
+    dest: "{{ font_dir }}"
+    remote_src: true
+    owner: "{{ font_system_wide | ternary(omit, username) }}"
+  loop: "{{ tool_sets.nerd_fonts }}"
+  loop_control:
+    index_var: idx
+  when: downloaded_fonts.results[idx].stat.exists
+  become: "{{ font_system_wide }}"
+  notify: Update font cache
+
+- name: Install additional fonts via Homebrew Cask
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ tool_sets.additional_fonts.macos }}"
+  become_user: "{{ username }}"
+  become: true
+  register: fonts_cask_result
+  failed_when: false
+  when: ansible_facts['os_family'] == 'Darwin'
+
+- name: Install additional fonts via apt
+  ansible.builtin.apt:
+    name: "{{ tool_sets.additional_fonts.debian }}"
+    state: present
+  become: true
+  when: ansible_facts['os_family'] == 'Debian'
+  notify: Update font cache

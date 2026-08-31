@@ -22,8 +22,6 @@ You can enable specific features by passing variables or using tags (see below).
 | `rust` | `false` | Installs Rust toolchain |
 | `golang` | `false` | Installs Go toolchain |
 | `fonts` | `false` | Installs Nerd Fonts |
-| `vpn` | `false` | Installs VPN clients |
-| `gestures` | `false` | Installs libinput-gestures (Linux only) |
 | `all` | `false` | Enables ALL features |
 
 ## Tags
@@ -49,7 +47,6 @@ Tags allow you to run specific parts of the playbook. Using a tag automatically 
 | `docker` | Docker installation | `docker=true` |
 | `ddev` | DDEV installation | `ddev=true` |
 | `fonts` | Fonts installation | `fonts=true` |
-| `vpn` | VPN installation | `vpn=true` |
 | `gui` | GUI applications | `gui=true` |
 | `cleanup` | Final cleanup tasks | - |
 

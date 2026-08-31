@@ -1,8 +1,24 @@
 ---
+# Bootstrap + update/upgrade are the same on both platforms. Only the
+# linuxbrew directory pre-create is Debian-specific, and macOS runs the
+# brew module as the invoking user rather than via become.
 - name: Check if Homebrew is already installed
   ansible.builtin.stat:
     path: "{{ homebrew_path }}/brew"
   register: homebrew_exists
+
+- name: Pre-create Homebrew directory with correct permissions
+  ansible.builtin.file:
+    path: /home/linuxbrew
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: '0755'
+    recurse: true
+  become: true
+  when:
+    - ansible_facts['os_family'] == 'Debian'
+    - not homebrew_exists.stat.exists
 
 - name: Install homebrew
   ansible.builtin.shell:
@@ -21,7 +37,8 @@
   community.general.homebrew:
     update_homebrew: true
     path: "{{ homebrew_path }}"
-  become: false
+  become: "{{ ansible_facts['os_family'] == 'Debian' }}"
+  become_user: "{{ username }}"
   register: brew_update_result
   until: brew_update_result is success
   retries: 3
@@ -31,7 +48,8 @@
   community.general.homebrew:
     upgrade_all: true
     path: "{{ homebrew_path }}"
-  become: false
+  become: "{{ ansible_facts['os_family'] == 'Debian' }}"
+  become_user: "{{ username }}"
   register: brew_upgrade_result
   until: brew_upgrade_result is success
   retries: 3

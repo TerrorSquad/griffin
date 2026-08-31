@@ -1,0 +1,35 @@
+---
+# mise owns the Go toolchain: it handles arch, upgrades and per-project
+# pinning, which the previous hand-rolled go.dev tarball installer did not.
+# Replaces darwin/golang.yaml + debian/golang.yaml (128 near-identical lines).
+#
+# Pinned to a major.minor rather than @latest: `latest` re-resolves on every
+# run, so each upstream release installs another ~260MB toolchain and keeps
+# the old ones. Bump this line to move Go forward deliberately.
+- name: Install Go via mise
+  ansible.builtin.command: mise use --global go@{{ golang_version }}
+  become_user: "{{ username }}"
+  become: true
+  environment:
+    PATH: "{{ homebrew_path }}:{{ local_bin }}:{{ ansible_env.PATH }}"
+  register: mise_go
+  # tolerate mise being absent; the module returns no stdout/stderr on ENOENT
+  failed_when: false
+  changed_when: "'installed' in (mise_go.stdout | default('') ~ mise_go.stderr | default(''))"
+
+# mise shims cover `go` itself, but binaries from `go install` land in
+# GOPATH/bin, which mise does not manage. That export goes in .zshrc.local
+# because .zshrc is overwritten from defaults/ on every run.
+#
+# NOTE: .zshrc.local doubles as the sentinel for zsh.yaml's one-time rescue of
+# a pre-existing .zshrc. shell_environment.yaml runs before this file in
+# tasks/main.yaml, so the rescue always happens first on a full run.
+- name: Add GOPATH bin to PATH
+  ansible.builtin.lineinfile:
+    path: "{{ user_home }}/.zshrc.local"
+    create: true
+    mode: "0644"
+    line: "export PATH=$PATH:{{ user_home }}/go/bin"
+    owner: "{{ username }}"
+  become_user: "{{ username }}"
+  become: true

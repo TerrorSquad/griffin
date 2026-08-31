@@ -10,7 +10,6 @@ zsh_executable: "/usr/bin/zsh"
 system_bin: "/usr/local/bin"
 
 # User directories (depend on user_home and config_home)
-libinput_home: "{{ user_home }}/.libinput-gestures"
 local_bin: "{{ user_home }}/.local/bin"
 powerlevel_10k: "{{ user_home }}/.powerlevel10k"
 autostart_path: "{{ config_home }}/autostart"

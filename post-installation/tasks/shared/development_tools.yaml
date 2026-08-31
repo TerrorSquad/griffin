@@ -18,16 +18,8 @@
 
 - name: Install fonts
   ansible.builtin.include_tasks:
-    file: "{{ ansible_facts['os_family'] | lower }}/fonts.yaml"
+    file: shared/fonts.yaml
     apply:
       tags: [fonts]
   when: (fonts | bool) or (gui | bool) or (all | bool)
-  tags: [always]
-
-- name: Install VPN software
-  ansible.builtin.include_tasks:
-    file: "{{ ansible_facts['os_family'] | lower }}/vpn.yaml"
-    apply:
-      tags: [vpn]
-  when: (vpn | bool) or (all | bool)
   tags: [always]
