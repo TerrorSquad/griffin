@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.1](https://github.com/TerrorSquad/griffin/compare/v2.12.0...v2.12.1) (2026-11-06)
+
+
+### Bug Fixes
+
+* **homebrew:** trust taps before installing; update CI and docs deps ([#55](https://github.com/TerrorSquad/griffin/issues/55)) ([6784166](https://github.com/TerrorSquad/griffin/commit/6784166c9bfd2e047a4434c368aef26dcc52ab04))
+
 ## [2.12.0](https://github.com/TerrorSquad/griffin/compare/v2.11.0...v2.12.0) (2026-08-31)
 
 
