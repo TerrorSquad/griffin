@@ -84,6 +84,14 @@
       delay: 2
       become: false
 
+    # See the note on trusting taps in shell_environment.yaml. Third-party tap, so
+    # trust only the formula we install.
+    - name: Trust the DDEV formula
+      ansible.builtin.command: "{{ homebrew_path }}/brew trust --formula ddev/ddev/ddev"
+      register: brew_trust_ddev_result
+      changed_when: "'Already trusted' not in brew_trust_ddev_result.stdout"
+      become: false
+
     - name: Install DDEV via Homebrew
       community.general.homebrew:
         name: ddev/ddev/ddev

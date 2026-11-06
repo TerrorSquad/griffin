@@ -18,6 +18,15 @@
   become: "{{ ansible_facts['os_family'] == 'Debian' }}"
   become_user: "{{ username }}"
 
+# Homebrew refuses to load formulae from an untrusted tap. `brew install` trusts the
+# names it is given, but the homebrew module runs `brew info` first, which does not.
+- name: Trust the terrorsquad Homebrew repository
+  ansible.builtin.command: "{{ homebrew_path }}/brew trust --tap terrorsquad/tap"
+  register: brew_trust_result
+  changed_when: "'Already trusted' not in brew_trust_result.stdout"
+  become: "{{ ansible_facts['os_family'] == 'Debian' }}"
+  become_user: "{{ username }}"
+
 - name: Build the Homebrew CLI package list
   ansible.builtin.set_fact:
     homebrew_cli_packages: >-

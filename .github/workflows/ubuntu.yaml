@@ -30,7 +30,7 @@ jobs:
             flags: "-e ci=true"
     name: ansible (${{ matrix.name }})
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Ansible collections
         run: |
