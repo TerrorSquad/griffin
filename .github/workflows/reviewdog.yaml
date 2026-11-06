@@ -14,10 +14,10 @@ jobs:
     name: runner / ansible-lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
-          python-version: 3.11.1
+          python-version: "3.x"
       - name: ansible-lint
         uses: reviewdog/action-ansiblelint@v1
         with:
@@ -28,7 +28,7 @@ jobs:
     name: runner / assertions
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Ansible
         run: pipx install ansible-core || pip install ansible-core
